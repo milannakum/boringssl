@@ -10,7 +10,7 @@ add_executable(
   test_config.cc
   test_state.cc
 )
-target_link_libraries(bssl_shim ssl crypto)
+target_link_libraries(bssl_shim ssl crypto decrepit)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   add_executable(
@@ -25,7 +25,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     test_config.cc
     test_state.cc
   )
-  target_link_libraries(handshaker ssl crypto)
+  target_link_libraries(handshaker ssl crypto decrepit)
 else()
   # Declare a dummy target for run_tests to depend on.
   add_custom_target(handshaker)

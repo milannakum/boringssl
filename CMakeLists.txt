@@ -735,15 +735,18 @@ if(BUILD_TESTING)
   # PRNG initialisation, which means that it can't have other tests running before
   # it does.
   add_executable(urandom_test ${URANDOM_TEST_SOURCES})
-  target_link_libraries(urandom_test test_support_lib boringssl_gtest crypto)
+  target_link_libraries(urandom_test test_support_lib boringssl_gtest crypto
+                        decrepit)
   add_dependencies(boringssl_all_tests urandom_test)
 
   add_executable(crypto_test ${CRYPTO_TEST_SOURCES})
-  target_link_libraries(crypto_test test_support_lib boringssl_gtest crypto)
+  target_link_libraries(crypto_test test_support_lib boringssl_gtest crypto
+                        decrepit)
   add_dependencies(boringssl_all_tests crypto_test)
 
   add_executable(ssl_test ${SSL_TEST_SOURCES})
-  target_link_libraries(ssl_test test_support_lib boringssl_gtest ssl crypto)
+  target_link_libraries(ssl_test test_support_lib boringssl_gtest ssl crypto
+                        decrepit)
   add_dependencies(boringssl_all_tests ssl_test)
   add_executable(decrepit_test ${DECREPIT_TEST_SOURCES})
   target_link_libraries(decrepit_test test_support_lib boringssl_gtest
@@ -751,31 +754,33 @@ if(BUILD_TESTING)
   add_dependencies(boringssl_all_tests decrepit_test)
 
   add_executable(pki_test ${PKI_TEST_SOURCES})
-  target_link_libraries(pki_test test_support_lib boringssl_gtest pki crypto)
+  target_link_libraries(pki_test test_support_lib boringssl_gtest pki crypto
+                        decrepit)
   target_compile_options(pki_test PRIVATE ${PKI_CXX_FLAGS})
   add_dependencies(boringssl_all_tests pki_test)
 
   add_executable(test_fips util/fipstools/test_fips.cc)
-  target_link_libraries(test_fips crypto)
+  target_link_libraries(test_fips crypto decrepit)
 
   add_executable(jitter_deltas util/fipstools/entropy/jitter_deltas.cc)
-  target_link_libraries(jitter_deltas crypto)
+  target_link_libraries(jitter_deltas crypto decrepit)
 
   if(BUILD_TESTING)
     add_executable(bssl_bench ${BENCH_SOURCES})
-    target_link_libraries(bssl_bench ssl pki crypto benchmark::benchmark)
+    target_link_libraries(bssl_bench ssl pki crypto decrepit
+                          benchmark::benchmark)
   endif()
 endif()
 
 if(FIPS)
   add_executable(modulewrapper ${MODULEWRAPPER_SOURCES})
-  target_link_libraries(modulewrapper crypto)
+  target_link_libraries(modulewrapper crypto decrepit)
   add_executable(entropy_modulewrapper ${ENTROPY_MODULEWRAPPER_SOURCES})
-  target_link_libraries(entropy_modulewrapper crypto)
+  target_link_libraries(entropy_modulewrapper crypto decrepit)
 endif()
 
 add_executable(bssl ${BSSL_SOURCES})
-target_link_libraries(bssl ssl crypto)
+target_link_libraries(bssl ssl crypto decrepit)
 
 if(FUZZ)
   # TODO(crbug.com/42290412): Drive this build with build.json and flatten.
