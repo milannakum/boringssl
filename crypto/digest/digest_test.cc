@@ -57,9 +57,11 @@ static const MD sha224 = {"SHA224", &EVP_sha224, &SHA224};
 static const MD sha256 = {"SHA256", &EVP_sha256, &SHA256};
 static const MD sha384 = {"SHA384", &EVP_sha384, &SHA384};
 static const MD sha512 = {"SHA512", &EVP_sha512, &SHA512};
+static const MD sha512_224 = {"SHA512-224", &EVP_sha512_224, &SHA512_224};
 static const MD sha512_256 = {"SHA512-256", &EVP_sha512_256, &SHA512_256};
 static const MD md5_sha1 = {"MD5-SHA1", &EVP_md5_sha1, nullptr};
 static const MD blake2b256 = {"BLAKE2b-256", &EVP_blake2b256, nullptr};
+static const MD blake2b512 = {"BLAKE2b-512", &EVP_blake2b512, nullptr};
 
 struct DigestTestVector {
   // md is the digest to test.
@@ -138,6 +140,15 @@ static const DigestTestVector kTestVectors[] = {
      "8e959b75dae313da8cf4f72814fc143f8f7779c6eb9f7fa17299aeadb6889018"
      "501d289e4900f7e4331b99dec4b5433ac7d329eeb6dd26545e96e55b874be909"},
 
+    // SHA-512-224 tests, from
+    // https://csrc.nist.gov/csrc/media/projects/cryptographic-standards-and-guidelines/documents/examples/sha512_224.pdf
+    {sha512_224, "abc", 1,
+     "4634270f707b6a54daae7530460842e20e37ed265ceee9a43e8924aa"},
+    {sha512_224,
+     "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopj"
+     "klmnopqklmnopqrlmnopqrsmnopqrstnopqrstu",
+     1, "23fec5bb94d60b23308192640b0c453335d664734fe40e7268674af9"},
+
     // SHA-512-256 tests, from
     // https://csrc.nist.gov/csrc/media/projects/cryptographic-standards-and-guidelines/documents/examples/sha512_256.pdf
     {sha512_256, "abc", 1,
@@ -155,6 +166,11 @@ static const DigestTestVector kTestVectors[] = {
     // BLAKE2b-256 tests.
     {blake2b256, "abc", 1,
      "bddd813c634239723171ef3fee98579b94964e3bb1cb3e427262c8c068d52319"},
+
+    // BLAKE2b-512 tests.
+    {blake2b512, "abc", 1,
+     "ba80a53f981c4d0d6a2797b69f12f6e94c212f14685ac4b74b12bb6fdbffa2d17d87c5392aab792dc252d5de4533cc9518d38aa8dbf1925ab92386edd4009923"},
+
 };
 
 static void CompareDigest(const DigestTestVector *test, const uint8_t *digest,

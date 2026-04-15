@@ -730,11 +730,11 @@ if(BUILD_TESTING)
   add_dependencies(boringssl_all_tests urandom_test)
 
   add_executable(crypto_test ${CRYPTO_TEST_SOURCES})
-  target_link_libraries(crypto_test test_support_lib boringssl_gtest crypto)
+  target_link_libraries(crypto_test test_support_lib boringssl_gtest decrepit crypto)
   add_dependencies(boringssl_all_tests crypto_test)
 
   add_executable(ssl_test ${SSL_TEST_SOURCES})
-  target_link_libraries(ssl_test test_support_lib boringssl_gtest ssl crypto)
+  target_link_libraries(ssl_test test_support_lib boringssl_gtest ssl decrepit crypto)
   add_dependencies(boringssl_all_tests ssl_test)
   add_executable(decrepit_test ${DECREPIT_TEST_SOURCES})
   target_link_libraries(decrepit_test test_support_lib boringssl_gtest
@@ -742,7 +742,7 @@ if(BUILD_TESTING)
   add_dependencies(boringssl_all_tests decrepit_test)
 
   add_executable(pki_test ${PKI_TEST_SOURCES})
-  target_link_libraries(pki_test test_support_lib boringssl_gtest pki crypto)
+  target_link_libraries(pki_test test_support_lib boringssl_gtest pki decrepit crypto)
   target_compile_options(pki_test PRIVATE ${PKI_CXX_FLAGS})
   add_dependencies(boringssl_all_tests pki_test)
 
@@ -766,7 +766,7 @@ if(FIPS)
 endif()
 
 add_executable(bssl ${BSSL_SOURCES})
-target_link_libraries(bssl ssl crypto)
+target_link_libraries(bssl ssl decrepit crypto)
 
 if(BUILD_TESTING)
   add_executable(generate_mldsa_certs pki/testdata/verify_unittest/generate_mldsa_certs.cc)

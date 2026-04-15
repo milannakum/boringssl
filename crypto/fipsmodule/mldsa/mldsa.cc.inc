@@ -1707,6 +1707,8 @@ int mldsa_generate_key_external_entropy(
 
 // FIPS 204, Algorithm 7 (`ML-DSA.Sign_internal`), using a pre-computed mu.
 // Returns 1 on success and 0 on failure.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wframe-larger-than="
 template <int K, int L>
 int mldsa_sign_mu_no_self_test(
     uint8_t out_encoded_signature[signature_bytes<K>()],
@@ -1844,6 +1846,7 @@ int mldsa_sign_mu_no_self_test(
     return 1;
   }
 }
+#pragma GCC diagnostic pop
 
 // FIPS 204, Algorithm 7 (`ML-DSA.Sign_internal`), using a pre-computed mu.
 // Returns 1 on success and 0 on failure.

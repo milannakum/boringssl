@@ -46,8 +46,10 @@ static const struct nid_to_digest nid_to_digest_mapping[] = {
     {NID_sha256, EVP_sha256, SN_sha256, LN_sha256},
     {NID_sha384, EVP_sha384, SN_sha384, LN_sha384},
     {NID_sha512, EVP_sha512, SN_sha512, LN_sha512},
+    {NID_sha512_224, EVP_sha512_224, SN_sha512_224, LN_sha512_224},
     {NID_sha512_256, EVP_sha512_256, SN_sha512_256, LN_sha512_256},
     {NID_md5_sha1, EVP_md5_sha1, SN_md5_sha1, LN_md5_sha1},
+    {NID_ripemd160, EVP_ripemd160, SN_ripemd160, LN_ripemd160},
     // As a remnant of signing |EVP_MD|s, OpenSSL returned the corresponding
     // hash function when given a signature OID. To avoid unintended lax parsing
     // of hash OIDs, this is no longer supported for lookup by OID or NID.
@@ -267,8 +269,32 @@ static const EVP_MD evp_md_blake2b256 = {
 
 const EVP_MD *EVP_blake2b256() { return &evp_md_blake2b256; }
 
-static_assert(sizeof(BLAKE2B_CTX) <= EVP_MAX_MD_DATA_SIZE);
+static void blake2b512_init(EVP_MD_CTX *ctx) {
+  BLAKE2B512_Init(reinterpret_cast<BLAKE2B_CTX *>(ctx->md_data));
+}
 
+static void blake2b512_update(EVP_MD_CTX *ctx, const void *data, size_t len) {
+  BLAKE2B512_Update(reinterpret_cast<BLAKE2B_CTX *>(ctx->md_data), data, len);
+}
+
+static void blake2b512_final(EVP_MD_CTX *ctx, uint8_t *md) {
+  BLAKE2B512_Final(md, reinterpret_cast<BLAKE2B_CTX *>(ctx->md_data));
+}
+
+static const EVP_MD evp_md_blake2b512 = {
+  NID_undef,
+  BLAKE2B512_DIGEST_LENGTH,
+  0,
+  blake2b512_init,
+  blake2b512_update,
+  blake2b512_final,
+  BLAKE2B_CBLOCK,
+  sizeof(BLAKE2B_CTX),
+};
+
+const EVP_MD *EVP_blake2b512(void) { return &evp_md_blake2b512; }
+
+static_assert(sizeof(BLAKE2B_CTX) <= EVP_MAX_MD_DATA_SIZE);
 
 static void md4_init(EVP_MD_CTX *ctx) {
   BSSL_CHECK(MD4_Init(reinterpret_cast<MD4_CTX *>(ctx->md_data)));
