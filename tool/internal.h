@@ -24,6 +24,9 @@
 #include <openssl/base.h>
 #include <openssl/span.h>
 
+
+BSSL_NAMESPACE_BEGIN
+
 struct FileCloser {
   void operator()(FILE *file) { fclose(file); }
 };
@@ -137,7 +140,6 @@ bool SHA224Sum(const std::vector<std::string> &args);
 bool SHA256Sum(const std::vector<std::string> &args);
 bool SHA384Sum(const std::vector<std::string> &args);
 bool SHA512Sum(const std::vector<std::string> &args);
-bool SHA512224Sum(const std::vector<std::string> &args);
 bool SHA512256Sum(const std::vector<std::string> &args);
 bool Server(const std::vector<std::string> &args);
 bool Sign(const std::vector<std::string> &args);
@@ -150,5 +152,6 @@ extern const size_t kDERRSAPrivate3072Len;
 extern const uint8_t kDERRSAPrivate4096[];
 extern const size_t kDERRSAPrivate4096Len;
 
+BSSL_NAMESPACE_END
 
 #endif  // !OPENSSL_HEADER_TOOL_INTERNAL_H

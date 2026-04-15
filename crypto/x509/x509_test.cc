@@ -15,8 +15,9 @@
 #include <limits.h>
 
 #include <algorithm>
-#include <iterator>
 #include <functional>
+#include <iterator>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -32,6 +33,7 @@
 #include <openssl/digest.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
+#include <openssl/mldsa.h>
 #include <openssl/nid.h>
 #include <openssl/pem.h>
 #include <openssl/pool.h>
@@ -514,6 +516,250 @@ ga9OukqY6qm05qo0UwQzAPBgNVHRMBAf8EBTADAQEAMA4GA1UdDwEBAAQEAwIDCDAg
 BgNVHQ4BAQAEFgQUmx9e7e0EM4Xk97xiPFl1uQvIuzswBQYDK2VwA0EAryMB/t3J5v
 /BzKc9dNZIpDmAgs3babFOTQbs+BolzlDUwsPrdGxO3YNGhW7Ibz3OGhhlxXrCe1Cg
 w1AH9efZBw==
+-----END CERTIFICATE-----
+)";
+
+// kMlDsa65Cert is the example ML-DSA-65 certificate from
+// https://tools.ietf.org/html/rfc9881#name-example-certificates
+static const char kMlDsa65Cert[] = R"(
+-----BEGIN CERTIFICATE-----
+MIIVjTCCCIqgAwIBAgIUFZ/+byL9XMQsUk32/V4o0N44804wCwYJYIZIAWUDBAMS
+MCIxDTALBgNVBAoTBElFVEYxETAPBgNVBAMTCExBTVBTIFdHMB4XDTIwMDIwMzA0
+MzIxMFoXDTQwMDEyOTA0MzIxMFowIjENMAsGA1UEChMESUVURjERMA8GA1UEAxMI
+TEFNUFMgV0cwggeyMAsGCWCGSAFlAwQDEgOCB6EASGg9kZeOMes93biwRzSC0riK
+X2JZSf2PWKVh5pa9TCfQWzjbsu3wHmZO/YG+HqiTaIzmiqLVHFlY+LvG606J7mfS
+wDIJVNVyEsrHIp/x1urwOSi9UVEfjYjYR3NsfeJzDVl45UEHExYJeIZ3Eb9VOaC/
+xMNQwr5XK68O4uL7Fsz+oIAo2ZrEmuu3WTfdzhEc2rYv/zzqi6IjPR5W+8XFoecm
+3mP63SrwFrEZF3+j2XGi2Sdxc/zlW2d0WvC3wh1Zfb65Pmoy80HEmlqL6eglCI0f
+KqRRVdbIrhU2fk6wA7j994UQcZSXOfn/8JAj6vRRBNKoSkWQbu1GcaRNwo0nmHu1
+XfaenoVh9hqApyaZUDhl/tm37nKo4XoZxAgUT0spr+9wMcOm2FcWELQsn0ISRaiP
+GX4WgSsDEVm2W5aH5bPpNMUiWumKebpz0rOZ1zUQ7/rRnlO4RQ8LqPzhAS/ZjSYK
+dKqqE/riSaAGscNPW6C4gvJjeCIvs28ig8JD8P/rXxu0FKCnDVXj1ApWtsvIiuHw
+O3sogtmN7qKOFFyd7f2OrxzvLtlKiwUPiWT0bR6g0MKkPg3aYYKtv09u0XW2dCJX
+hZvyLzpBfs8fnYkxe15TnVh68WueExPgRRT/pkuos/8rgyH4gRyz+wIsj2ROcKS4
+Ci+/7mBKu3N5CR6o5sXHTfwCg2ZrQMB5OHACggShNr9dqVaOt5jTSQOL2wwR4DRF
+54R8tQacdc8orGAcd5nZWCEN28siblGv758d5HsHOHPW0/l0Vr7eCFCC50opiyzU
+j0swkxVfNmyPpgHGr4WN+jLAhJGyopiH+QM1lJpdbtqmeYgqOpXWv22XCiIfS509
+jL84SvgarJXisylOBHiayDcnpdwEVZ+Wr0HYoFNRb+7uvFJ0brarKBngkQhxDYNf
+AR+mMGWHKtM01c3/srIxBQfpL8mTrjF9qX9PMJza8PZ+2Z2QIVV2CDhJ+VOyRtf+
+2z/bZ2eYUKWtQE5kFH+3z09q7d0Fr7S4NJaNH+iAFJYNzl2UIjZSbhKkeNaeX75p
+cDELMIwGhFAYz8eyq0MKE6axrHuwLMy7PZEawvEQaGE/vgKb/c4Cz1zTiVDtcsg5
+RO37x1YVr4f4ZMBR88VUVsVBKGOkDAbR2rVivf8FcbjTw5F7vTAIgLul6Zgjm5X6
+kbfWQW1POYs6280wmD7TWStNnvfUI2/QD1DZiqU6I1rEFycg932WFyZymAz+j/el
+pwJ4PtwroxsiWQFaES/H9GipwvlGQDkALTDvZ4tMt5i8EWIWv3qafBi6A7e1j9B1
+FdMRUEnTYUvnoH50QwB1DfHSxYdTOJBZ6vw9eFzN0xwHZIvtwDpcO4rUbQZNWcE9
+VzdHKfxOKVNi4qUZEgRTBCi8FSKvoo/1/hZV4wTKW8jCetDgxqOd1N8olWwUs4zJ
+NoLO/kArvV6C0pxGTkTrXTe0j8Vo3+DMbo4WuuoF5RNVkPGSlOc+g2ewIW27gVAw
+ud5VkT8IA5xCNRxZ5VFd1a+OCJoV5iXo9t7mOThsRkl9eiYyiHdN5YGn3pYptBtE
+JBQfl4+4MxII797DxuDeObxXBj89zWxHA3PAiJHqKcvHzG1kg7iIkIOs6GqntRsc
+LP5uKtGNl842+8VupC+ul+anrBFIZEeMNm3x67HnsRqQmFBP1Zdb3x9J3HAAK2PB
+c5qdJj+61Ac/ap9sK4r0tMMyoQOgz/pd7rLQYso8IV/TYAJr58UWT0pEJO90lIgE
+1m9GSHcyyCAseVR4ZHtOpx1ifAhgJMyjVKQfCHezjxmzd0rSCVyNpTsGniHHauLS
+AH4WcZ7UAIDTNPfaUun1pZkEOcrwg6lbgz8CrRCgjBptDyYMAHKFvUovR3A6Wu9G
+UofSU7GKwiUUMWIQ/1ZoFLEPh6KT1vGZ08OVmZDQwSaLT1DV+fzvu/I3vQwouAGC
+1mWXQfFPEL+7IbuhKrYgqiOW9WwGhrTqkBeZAiQhay/orXbEqRSO75qGo2Naaqd7
+wdz7b7pZp339qbdTDcDKhkjI2XNzjgG6uPCLSQXoSqRkG9YCQQzZdSAmXy8jHys1
+4V6y+gTSvZTVp3q68eDhYQEKmQCH9bRuqYiyvAUS/aD6kj2t1sRcUwHQlINnMmW1
+qy4Q9LpSD2u61WSlw9Xie9sID30g4TKWoxgZVMOcZJyUPr4X31wfeq4Kj+EmxHdY
+Wl1NZIoNAItq9ejNMb5pqSltTz/SXthvIh5Lk/ZfWSmWdTNiS5I1dQwwcHVQtYU2
+0QmnExxaW75KVxVWfBJTSux2YHYe67n64okcd0WJuA5WatVX3e9zZxlrcifqmHDv
+Cd3+x51rkxmmh5tSBddr96ulrPM6+1nRf8VOaDg9a+Wgjptm2lPc3gCLspS4WCvR
+Ms3MSZWf28IeUnIYgMitA1LHnwOkO72ExM39xsUpAF4efNmjSacWijVWm6XeqBiW
+jVqRRmvW5k4gv2JBcZivxOgcKN137UAoIyOYtS+96GvIT0dbkBZxDOKqvBGga026
+yQHsFs82XKPy1TgTlIppOg+T55xGyl1abco9KMpQrRi9E/ylUFndmxhfefnEcZak
+6BshBLxGCgUeAvLoRE+jQjBAMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTAD
+AQH/MB0GA1UdDgQWBBQbBWPjzTNGFJyMnrzyOwpOWpAO6jALBglghkgBZQMEAxID
+ggzuABGBaGipDGaTS9ux0ZxTpqXcMFNf9tzIZpskKErpMQ6aV8eRhwK1+knGM75H
+XVSS2dfuo5FCaBmpJpq1lPQ0lCtN/LulqD3M01O+evbv3WYJch6O5zkUALRH5Xg9
+NKps3fGNrf+wyuCjyJn+D/Y75gWpM25S7jXrsu4vu2TNqlzkyzYehJx6zu3B70QJ
+0vfBCLthjdBepjQ33aA5bAgJoIMDd3UUJwtDdeYP+WOf6qRq3CaYEigq/hfBb5sY
+m6MS6lY8ICDjHve05b2iguECEkeZGXfxSF0w/tIgyhPoRx6PvIuyuVI14a43ttSP
+zATqALqoA6nUifcgr+RpWMeNQBMTJlc6EnMXxB+H0wq/ZfVmx7ixgTgOm8kIzcHv
+rO6yQkbyrD4hOXsYN7eabJvuZIpFTPyxfG8kwBUl/8Vrp5hl8z9F1fJU3J8bOUha
+XmTrHU+gM8oNVrnUHYufcLpJkhiufVWvuXtHsmyvZm9N6nkOCDCkJwUop91d0Pde
+2dBHOKcb2L1lWfKy4N43nt9ntldr4s0LieIb1XDFM+eJmMpv6/mb1no7W9koXf+j
+zIrbeY9nMGvQW+opV2XA8HEYyJ2iaFrAn9bcyO/CFCsyPRchJ7sO6FfSFISEw6ak
+D3hTCMqSaPYk4THepKBi73/PdKcyVXEZLXFTT1wPv+PacRE4rgPlfpWe+6lOtsZW
+8AG+FqzLE1Ag87Hj5W1xmTPC0R/47lnsQ+HVWEfMGtt1kCuWqfA9OkQNyK5ogLkK
+f1KBYF6Ie5Ay2vw6cKZOlHSmAynwskgqzuPOGAqEUdbomnSbulLH/Xut8YfR0gNH
+5q2vzA6lr7Hw6NpCMiH3SJ3+9ST1wDS1KS9HN6gPh8q2Vps67Ezg8BnEsJ2w2Qt1
+WfFSXlNtwGZSLLZVcZbk6IRsvg5E19egM7Uozmc621rdZEOU56n24XyWDP3oVJrC
+y9/m7mMPesIo5+Sa0oZyG9QYf8mjqckUbS8+z1xFX4s+aJB3bk+ACbJBS2EnJUjM
+Pi2vvQ60nU+euOLxRBBizMkShiWUoAsM/1Gk7OM2WU0mdNPsrWVNih4F0LLsxhBl
+DBa/7+Kk9X9XqvMaTP+RJU2Z6r0Xhz/0QODSH1aefm2AYCgmv/fUIj8SQsMFxnrb
+ocarCVc0BbJLMPrQm71SPsVzZCqHwME+aLDMlTE6Mqj4uR8feilTgK8mclcUgLQL
+CsjAM/xT2B3RGVUSx4W21q0FYPy4L9NCyKMfFOg8+3ChmCg5u6XYKncSHltyoEE8
+XVDgEKgxONy5huCYPpDo087Ke1AGg6Br6WTmDGwnXOIzyQNMEJlaOZaCCKUqitfu
+d+DvAD3+bzk6WTwsj7OMUEeqo5NBUxMR/eWTJRBmVT97f+6SnGld+UBliVi6V/Sx
+OeTWQMO9ljKd9lMar8uT/WyyvByUCevHzEAe5YiLMezPS8hw7lu4XRhe+3uD5JsX
+854zVKOrraOh1t0sZHlxdNO+656htKo4dO5ObGbqp1tWmvWw5VEcX233yqSnN0vj
++/0l9lUfS7YOYrCQHtbds+gLlL8ZhpBhdcZd/HLwfuShBdvjwRRmNglG5lKF9G1x
+qAxLr9ZIuooPKDG9IWD3RRDSuXcBCJcPh1FQ4JVZDgxc2vnraC9ikS7iBdnrcFbM
+ASjTvoHNuo5j42aqca8dStxXW4WX9gNd1Ld+ItLA2GaBi1EK+mf+f+37xC46xZ/B
+g/kWxT9HYHF5SwxZ7zszZZLSKykJd0ziUIdeYMgZ4Yo6v08SU51/2ZSzAxQW4TZ6
+j88YJBsuX8ariqiCKOTF+lHavSK7RjsaN+McvJ0KR6RZw9iBeO9najevlYT1HxZP
+KfvVQVWfyhmevOoyo3ZhQP07zORuoXqXOidypQWpY2RS+g7WU+HaFyeFzZAbYFEL
+M5Eibh16apEtPOXglDKWTiLNdU6ws0T5ymHNgrAZLtq308RhQkTCFR7/yYnlbcMh
+9MApe0Z8/aNFEU3jbmTFBRZGYX7tfqJMHgYAaVW6I2u27Ix/bcsLDN+K1hwK1QmH
+IzpxaAAeSh6fOq7DDcm1ahEuxMZX/mV7SA8a8LQvYMk0KTeuexHw6B+hSipLUReK
+bMIYSwYS2qMJLkI+TFP7nY4KvPGaKiIIbFDHMTRKH9jS2B+rUiVaDqCMZW7rZ8De
+EGjGYTb0dnrT0ItmVRypQyi36PyUybAr39Ry7XDdQOJwdXOhq/qrL8IMQOhXgGAV
+WD3VGVcJAaQHHgEM8nVENxtuDl62S71zn03EKo82x3F7MGnYfDaHFShb1UCRxIC2
+SPrAAn8iH31smTl3CD+5HdEBv3xzeY+d/TKL2z1395SOMQNNEwWnJ2tyYwkueRdc
+4O1EomIp9vm2gjZiV6nAnqaac87vdzOjGx2u0hLWfR+77tfL2P9q9BAd28yCTAie
+i+OcgjBG0ooisI9qxAXRFMkgNJtEsoe0Fk37az3MBPOo9jWiPlKfGKn/n8/YcAHk
+f5z30IiwK/BenYLJPFfWCdXW3OxXOECmPzKmt++iOHjpAeNiGJU8OBvjhHn8oGBx
+ONb+XmvgNuzOkS6XtcPjt5bzbQBFFXnxiqbW5F9qPfgg28I397cQDI4ysGw460+e
+hf7lSqfCFUhKENkkpPcUF2eSByni3VLLmdw5WscUk3Ey4kmiouvLk5opVdfJruyR
+lbuZMTqThXRZMqdxicwEonZZaGzWBFm4MFFRm3oXJ9Nap+1QgIM6uqHVSBwR27rP
+7ph5iP93E9L4lr78xUXPlbEq8sB2u/5luvS+jIu01Rjk1U+hIBLML6uOmNTHX8RU
+AjyQas+bOQ3rhvik2bPaybLzWEhYuDpBaiOyn7aWtZHd5hRmZrobo3WcVBnnWv+p
+bjn3bKluMhEtnXI4OtOP5TVAGUKP0k2eab5PRhHRvdzg7Zn4DZctA37w+pxwr/TC
+hXAa2eyUnxhrxv8Hu9FrF8omCRyyW8s4Hmc+WVg16VXQl1bE0WKK1CtRUKQaiNCB
+Ha6UYRczREGIFYwkY1RMAoQwwSuqeJG3yaPT7ezYSDqEZBAVr6j3RzgNsf0MMk/q
+VDPOA6g/D99DIB6D9ghUFSgai/1Rvo5eaVs7B9X7c0+qK8H0zusYGDFd5fr9b+7W
+9j0Zo54bGu4uAW+7vh7pq8jqOG+L3bMkth8b/7ZsLfkkYCtlqP2VfOL8qwWGzOFL
+X6k9anNFgd5Ip52e5KvReNCHSKuHp7zrzk/WyVzU81ZLJYHCv4P3RHxStQHMdaqn
+qxtPEXgX9ORWF2aw8mf9XbXarHrkHOkyhwi+tF7dLxVDPMREJKm1y/jqfSaJP1aP
+0es4QSdF5CEBha7oixy00ejqGx5z3HoG6maIAOGUTb/aTQpPR8OmCzccP6rqERwS
+6Sl+TznKi6nbbrjRcyDO/9TnM8G1Aj3T0fiU9h2hXJQnD3vuRwI5H8TkRDK4804C
+MmzKH/pnAWl9UmOl/066Pz4g0XEX/jg8wPKHvnMyd6QbSud5Y1swOqcnperhhkVN
++mJqTkSujjFr7EMdkUsG1SK0BeTVS9lSb6iu7bLa2rOha9l/zPI1Fp7WiHqANnOW
+xgcl3QJHVkvxqijDIrShYlS2bcn8xYL6e1PNxfJCqxEfDJHmkQwYDiqRZpkuMJ2Z
+5+uYPCtX6+6bpIrmLBQZFxR/YgFLlF5t5rtHadL3DCjOWyvT0tOhvQfaoeOojgSa
+rYrm5GzvClE0SF1PPsn/qsFY0s8fpjpVOwuU+E3qi59V6LVZB4NEYn8x8qTsdyeZ
++Z+d7LbnsPirvSFU+r/ZUCTP8Rzd2ejH8akGoUepeXgqUXHdqi86jvgoTds8vHUg
+7E3OGjBH4my94VaNx6O8HIEhtY6zq2X18IkRvwUhO9dLIUZqYNAgC5n/8NQrxRqi
+iY0RxJ9UObtef5YlNsNNoXmL4tXvJ9esMNTMFR5bHLlFW5dpfHd2TCzAZKxRPeGr
+uKQ14KFmXfvcmw18tV7YXNTitPtBb+5osiJIX8GBG91eipxNytxK/qoVqvvfjytS
+f4Bi0XC/I1E4xQ46UwTvGQKLTtRHyeg3vG+gX5raRK2Ny6IXDJj0scYE79q83TAc
+uWXH6mJ0D04Edb/ut+2n5xL5VDde/rXlzntbCYTwxa4BbJmYjwQCiKVzDeknXdMj
+xsV0Euw3Okm3CIQp7biPo7108y5keJll6HEpx7sWT37mNOoj4AFdm79wzEJQhl6p
+KOo4Bpfj1etTFQAcU6E3weyVD9ROi7WtSBH4EFhFOfgfga1CHD8DHbwDdsa+dhIj
+9mORCp7dEUPjt5Qi5mimlqQwYFfCHI+ap6VYsrhpzWr3gPi8EENRsbTUEWWezM/n
++BH4UnmFmQY7SGZyeHuDvFNzdNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYNDxMc
+IA==
+-----END CERTIFICATE-----
+)";
+
+// kMlDsa65CertNull is an invalid self-signed ML-DSA-65 certificate with an
+// explicit NULL in the signature algorithm.
+static const char kMlDsa65CertNull[] = R"(
+-----BEGIN CERTIFICATE-----
+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
 -----END CERTIFICATE-----
 )";
 
@@ -1938,6 +2184,17 @@ static bool AddAuthorityKeyIdentifier(X509_CRL *crl,
 }
 
 TEST(X509Test, NameConstraints) {
+  enum class SpecialCase {
+    // The constraint as excludedSubtrees is the opposite of permittedSubtrees.
+    kNormal,
+
+    // The constraint always fails as excludedSubtrees.
+    kExcludedViolation,
+
+    // The constraint fails as excludedSubtrees when the name is a DN attribute.
+    kExcludedViolationIfDNAttribute,
+  };
+
   UniquePtr<EVP_PKEY> key = PrivateKeyFromPEM(kP256Key);
   ASSERT_TRUE(key);
 
@@ -1945,7 +2202,8 @@ TEST(X509Test, NameConstraints) {
     int type;
     std::string name;
     std::string constraint;
-    int result;
+    int permit_result;
+    SpecialCase special_case = SpecialCase::kNormal;
   } kTests[] = {
       // Empty string matches everything.
       {GEN_DNS, "foo.example.com", "", X509_V_OK},
@@ -1965,17 +2223,58 @@ TEST(X509Test, NameConstraints) {
        X509_V_ERR_PERMITTED_VIOLATION},
       {GEN_DNS, "foo.example.com", ".unrelated.much.longer.name.example",
        X509_V_ERR_PERMITTED_VIOLATION},
+      // Trailing dot is ignored.
+      {GEN_DNS, "foo.example.com.", "example.com", X509_V_OK},
+      {GEN_DNS, "foo.example.com", "example.com.", X509_V_OK},
       // NUL bytes, if not rejected, should not confuse the matching logic.
       {GEN_DNS, std::string({'a', '\0', 'a'}), std::string({'a', '\0', 'b'}),
        X509_V_ERR_PERMITTED_VIOLATION},
 
+      // Wildcard CN matching.
+      {GEN_DNS, "*.com", "foo.example.com", X509_V_ERR_PERMITTED_VIOLATION},
+      // A foo.example.com permitted subtree does not permit *.example.com.
+      // However, a foo.example.com excluded subtree does exclude *.example.com
+      // because there is a partial overlap between the two.
+      {GEN_DNS, "*.example.com", "foo.example.com",
+       X509_V_ERR_PERMITTED_VIOLATION, SpecialCase::kExcludedViolation},
+      {GEN_DNS, "*.foo.example.com", "foo.example.com", X509_V_OK},
+      {GEN_DNS, "*.sub.foo.example.com", "foo.example.com", X509_V_OK},
+      {GEN_DNS, "*.bar.example.com", "foo.example.com",
+       X509_V_ERR_PERMITTED_VIOLATION},
+      {GEN_DNS, "*.example.com", "net", X509_V_ERR_PERMITTED_VIOLATION},
+      {GEN_DNS, "*.example.com", "com", X509_V_OK},
+
       // Names must be emails.
       {GEN_EMAIL, "not-an-email.example", "not-an-email.example",
        X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
-      // A leading dot matches all local names and all subdomains
+      {GEN_EMAIL, "not@an@email.example", "an@email.example",
+       X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
+      {GEN_EMAIL, "not@an@email.example", "email.example",
+       X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
+      {GEN_EMAIL, "not-an-email.example@", "not-an-email.example@",
+       X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
+      {GEN_EMAIL, "not-an-email.example@", "@",
+       X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
+      {GEN_EMAIL, "not-an-email.example@", "",
+       X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
+      // Only ASCII emails are supported.
+      {GEN_EMAIL, "bäd-chäräcter@not-an-email.example", "not-an-email.example",
+       X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
+      // Quoting is not supported.
+      {GEN_EMAIL, "\"foo\"@not-an-email.example", "foo@not-an-email.example",
+       X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
+      {GEN_EMAIL, "foo@not-an-email.example", "\"foo\"@not-an-email.example",
+       X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
+
+      // A leading dot matches all local names and all subdomains, but not the
+      // domain itself.
       {GEN_EMAIL, "foo@bar.example.com", ".example.com", X509_V_OK},
       {GEN_EMAIL, "foo@bar.example.com", ".EXAMPLE.COM", X509_V_OK},
       {GEN_EMAIL, "foo@bar.example.com", ".bar.example.com",
+       X509_V_ERR_PERMITTED_VIOLATION},
+      {GEN_EMAIL, "foo@bar.example.com", "foo@.example.com",
+       X509_V_ERR_PERMITTED_VIOLATION},
+      {GEN_EMAIL, "foo@bar.example.com", "foo@.bar.example.com",
        X509_V_ERR_PERMITTED_VIOLATION},
       // Without a leading dot, the host must match exactly.
       {GEN_EMAIL, "foo@example.com", "example.com", X509_V_OK},
@@ -1983,18 +2282,24 @@ TEST(X509Test, NameConstraints) {
       {GEN_EMAIL, "foo@bar.example.com", "example.com",
        X509_V_ERR_PERMITTED_VIOLATION},
       // If the constraint specifies a mailbox, it specifies the whole thing.
-      // The halves are compared insensitively.
+      // The localpart is usually handled case-sensitively, the domainpart
+      // case-insensitively.
       {GEN_EMAIL, "foo@example.com", "foo@example.com", X509_V_OK},
       {GEN_EMAIL, "foo@example.com", "foo@EXAMPLE.COM", X509_V_OK},
+      // In the special case of the email being supplied as a DN attribute,
+      // compare the localpart case-insensitively too, but for exclusions only.
       {GEN_EMAIL, "foo@example.com", "FOO@example.com",
-       X509_V_ERR_PERMITTED_VIOLATION},
+       X509_V_ERR_PERMITTED_VIOLATION,
+       SpecialCase::kExcludedViolationIfDNAttribute},
       {GEN_EMAIL, "foo@example.com", "bar@example.com",
        X509_V_ERR_PERMITTED_VIOLATION},
-      // OpenSSL ignores a stray leading @.
-      {GEN_EMAIL, "foo@example.com", "@example.com", X509_V_OK},
-      {GEN_EMAIL, "foo@example.com", "@EXAMPLE.COM", X509_V_OK},
+      // OpenSSL ignores a stray leading @. BoringSSL does not.
+      {GEN_EMAIL, "foo@example.com", "@example.com",
+       X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
+      {GEN_EMAIL, "foo@example.com", "@EXAMPLE.COM",
+       X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
       {GEN_EMAIL, "foo@bar.example.com", "@example.com",
-       X509_V_ERR_PERMITTED_VIOLATION},
+       X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
 
       // Basic syntax check.
       {GEN_URI, "not-a-url", "not-a-url", X509_V_ERR_UNSUPPORTED_NAME_SYNTAX},
@@ -2057,39 +2362,95 @@ TEST(X509Test, NameConstraints) {
     SCOPED_TRACE(t.name);
     SCOPED_TRACE(t.constraint);
 
-    UniquePtr<GENERAL_NAME> name = MakeGeneralName(t.type, t.name);
-    ASSERT_TRUE(name);
-    UniquePtr<GENERAL_NAMES> names(GENERAL_NAMES_new());
-    ASSERT_TRUE(names);
-    ASSERT_TRUE(PushToStack(names.get(), std::move(name)));
+    for (bool use_attr : {false, true}) {
+      SCOPED_TRACE(use_attr);
+      if (use_attr) {
+        if (t.type != GEN_EMAIL) {
+          // DN attribute is only supported for emails.
+          continue;
+        }
+      }
+      for (bool exclude : {false, true}) {
+        SCOPED_TRACE(exclude);
 
-    UniquePtr<NAME_CONSTRAINTS> nc(NAME_CONSTRAINTS_new());
-    ASSERT_TRUE(nc);
-    nc->permittedSubtrees = sk_GENERAL_SUBTREE_new_null();
-    ASSERT_TRUE(nc->permittedSubtrees);
-    UniquePtr<GENERAL_SUBTREE> subtree(GENERAL_SUBTREE_new());
-    ASSERT_TRUE(subtree);
-    GENERAL_NAME_free(subtree->base);
-    subtree->base = MakeGeneralName(t.type, t.constraint).release();
-    ASSERT_TRUE(subtree->base);
-    ASSERT_TRUE(PushToStack(nc->permittedSubtrees, std::move(subtree)));
+        UniquePtr<GENERAL_NAME> name = MakeGeneralName(t.type, t.name);
+        ASSERT_TRUE(name);
+        UniquePtr<GENERAL_NAMES> names(GENERAL_NAMES_new());
+        ASSERT_TRUE(names);
+        ASSERT_TRUE(PushToStack(names.get(), std::move(name)));
 
-    UniquePtr<X509> root =
-        MakeTestCert("Root", "Root", key.get(), /*is_ca=*/true);
-    ASSERT_TRUE(root);
-    ASSERT_TRUE(X509_add1_ext_i2d(root.get(), NID_name_constraints, nc.get(),
-                                  /*crit=*/1, /*flags=*/0));
-    ASSERT_TRUE(X509_sign(root.get(), key.get(), EVP_sha256()));
+        UniquePtr<NAME_CONSTRAINTS> nc(NAME_CONSTRAINTS_new());
+        ASSERT_TRUE(nc);
+        STACK_OF(GENERAL_SUBTREE) **rule =
+            exclude ? &nc->excludedSubtrees : &nc->permittedSubtrees;
+        *rule = sk_GENERAL_SUBTREE_new_null();
+        ASSERT_TRUE(*rule);
+        UniquePtr<GENERAL_SUBTREE> subtree(GENERAL_SUBTREE_new());
+        ASSERT_TRUE(subtree);
+        GENERAL_NAME_free(subtree->base);
+        subtree->base = MakeGeneralName(t.type, t.constraint).release();
+        ASSERT_TRUE(subtree->base);
+        ASSERT_TRUE(PushToStack(*rule, std::move(subtree)));
 
-    UniquePtr<X509> leaf =
-        MakeTestCert("Root", "Leaf", key.get(), /*is_ca=*/false);
-    ASSERT_TRUE(leaf);
-    ASSERT_TRUE(X509_add1_ext_i2d(leaf.get(), NID_subject_alt_name, names.get(),
-                                  /*crit=*/0, /*flags=*/0));
-    ASSERT_TRUE(X509_sign(leaf.get(), key.get(), EVP_sha256()));
+        UniquePtr<X509> root =
+            MakeTestCert("Root", "Root", key.get(), /*is_ca=*/true);
+        ASSERT_TRUE(root);
+        ASSERT_TRUE(X509_add1_ext_i2d(root.get(), NID_name_constraints,
+                                      nc.get(),
+                                      /*crit=*/1, /*flags=*/0));
+        ASSERT_TRUE(X509_sign(root.get(), key.get(), EVP_sha256()));
 
-    int ret = Verify(leaf.get(), {root.get()}, {}, {}, 0);
-    EXPECT_EQ(t.result, ret) << X509_verify_cert_error_string(ret);
+        UniquePtr<X509> leaf =
+            MakeTestCert("Root", "Leaf", key.get(), /*is_ca=*/false);
+        ASSERT_TRUE(leaf);
+        if (use_attr) {
+          UniquePtr<X509_NAME> subject(X509_NAME_new());
+          ASSERT_TRUE(subject);
+          ASSERT_TRUE(X509_NAME_add_entry_by_NID(
+              subject.get(), NID_pkcs9_emailAddress, V_ASN1_IA5STRING,
+              reinterpret_cast<const unsigned char *>(t.name.data()),
+              t.name.size(), /*loc=*/-1, /*set=*/0));
+          ASSERT_TRUE(X509_set_subject_name(leaf.get(), subject.get()));
+        } else {
+          ASSERT_TRUE(X509_add1_ext_i2d(leaf.get(), NID_subject_alt_name,
+                                        names.get(),
+                                        /*crit=*/0, /*flags=*/0));
+        }
+        ASSERT_TRUE(X509_sign(leaf.get(), key.get(), EVP_sha256()));
+
+        int got_result = Verify(leaf.get(), {root.get()}, {}, {}, 0);
+
+        int want_result = t.permit_result;
+        if (exclude) {
+          // By default, invert the sense when excluding.
+          switch (t.permit_result) {
+            case X509_V_OK:
+              want_result = X509_V_ERR_EXCLUDED_VIOLATION;
+              break;
+            case X509_V_ERR_PERMITTED_VIOLATION:
+              want_result = X509_V_OK;
+              break;
+          }
+
+          // Handle special cases.
+          switch (t.special_case) {
+            case SpecialCase::kExcludedViolation:
+              want_result = X509_V_ERR_EXCLUDED_VIOLATION;
+              break;
+            case SpecialCase::kExcludedViolationIfDNAttribute:
+              if (use_attr) {
+                want_result = X509_V_ERR_EXCLUDED_VIOLATION;
+              }
+              break;
+            default:;
+          }
+        }
+        EXPECT_EQ(want_result, got_result)
+            << "got \"" << X509_verify_cert_error_string(got_result)
+            << "\", want \"" << X509_verify_cert_error_string(want_result)
+            << "\"";
+      }
+    }
   }
 }
 
@@ -2205,6 +2566,30 @@ TEST(X509Test, TestX25519) {
                                           &public_value_size));
   EXPECT_EQ(Bytes(kExpectedPublicValue),
             Bytes(public_value, public_value_size));
+}
+
+TEST(X509Test, TestMlDsa65) {
+  UniquePtr<X509> cert(CertFromPEM(kMlDsa65Cert));
+  ASSERT_TRUE(cert);
+
+  UniquePtr<EVP_PKEY> pkey(X509_get_pubkey(cert.get()));
+  ASSERT_TRUE(pkey);
+
+  ASSERT_TRUE(X509_verify(cert.get(), pkey.get()));
+}
+
+TEST(X509Test, TestMlDsa65BadParameters) {
+  UniquePtr<X509> cert(CertFromPEM(kMlDsa65CertNull));
+  ASSERT_TRUE(cert);
+
+  UniquePtr<EVP_PKEY> pkey(X509_get_pubkey(cert.get()));
+  ASSERT_TRUE(pkey);
+
+  ASSERT_FALSE(X509_verify(cert.get(), pkey.get()));
+
+  EXPECT_TRUE(
+      ErrorEquals(ERR_get_error(), ERR_LIB_X509, X509_R_INVALID_PARAMETER));
+  ERR_clear_error();
 }
 
 static bssl::UniquePtr<X509> ReencodeCertificate(X509 *cert) {
@@ -2630,7 +3015,7 @@ TEST(X509Test, SignCSR) {
       // Check the signature was over the new public key.
       UniquePtr<EVP_PKEY> copy_pubkey(X509_REQ_get_pubkey(copy.get()));
       ASSERT_TRUE(copy_pubkey);
-      EXPECT_EQ(1, EVP_PKEY_cmp(pkey.get(), copy_pubkey.get()));
+      EXPECT_EQ(1, EVP_PKEY_eq(pkey.get(), copy_pubkey.get()));
     }
   }
 }
@@ -2721,6 +3106,66 @@ TEST(X509Test, Ed25519Sign) {
   ASSERT_TRUE(SignatureRoundTrips(md_ctx.get(), pub.get()));
 }
 
+TEST(X509Test, MlDsa44Sign) {
+  std::vector<uint8_t> pub_bytes(MLDSA44_PUBLIC_KEY_BYTES);
+  std::vector<uint8_t> seed_bytes(MLDSA_SEED_BYTES);
+  auto priv_key = std::make_unique<MLDSA44_private_key>();
+  ASSERT_EQ(1, MLDSA44_generate_key(pub_bytes.data(), seed_bytes.data(),
+                                    priv_key.get()));
+
+  UniquePtr<EVP_PKEY> pub(EVP_PKEY_from_raw_public_key(
+      EVP_pkey_ml_dsa_44(), pub_bytes.data(), MLDSA44_PUBLIC_KEY_BYTES));
+  ASSERT_TRUE(pub);
+  UniquePtr<EVP_PKEY> priv(EVP_PKEY_from_private_seed(
+      EVP_pkey_ml_dsa_44(), seed_bytes.data(), MLDSA_SEED_BYTES));
+  ASSERT_TRUE(priv);
+
+  ScopedEVP_MD_CTX md_ctx;
+  ASSERT_TRUE(
+      EVP_DigestSignInit(md_ctx.get(), nullptr, nullptr, nullptr, priv.get()));
+  ASSERT_TRUE(SignatureRoundTrips(md_ctx.get(), pub.get()));
+}
+
+TEST(X509Test, MlDsa65Sign) {
+  std::vector<uint8_t> pub_bytes(MLDSA65_PUBLIC_KEY_BYTES);
+  std::vector<uint8_t> seed_bytes(MLDSA_SEED_BYTES);
+  auto priv_key = std::make_unique<MLDSA65_private_key>();
+  ASSERT_EQ(1, MLDSA65_generate_key(pub_bytes.data(), seed_bytes.data(),
+                                    priv_key.get()));
+
+  UniquePtr<EVP_PKEY> pub(EVP_PKEY_from_raw_public_key(
+      EVP_pkey_ml_dsa_65(), pub_bytes.data(), MLDSA65_PUBLIC_KEY_BYTES));
+  ASSERT_TRUE(pub);
+  UniquePtr<EVP_PKEY> priv(EVP_PKEY_from_private_seed(
+      EVP_pkey_ml_dsa_65(), seed_bytes.data(), MLDSA_SEED_BYTES));
+  ASSERT_TRUE(priv);
+
+  ScopedEVP_MD_CTX md_ctx;
+  ASSERT_TRUE(
+      EVP_DigestSignInit(md_ctx.get(), nullptr, nullptr, nullptr, priv.get()));
+  ASSERT_TRUE(SignatureRoundTrips(md_ctx.get(), pub.get()));
+}
+
+TEST(X509Test, MlDsa87Sign) {
+  std::vector<uint8_t> pub_bytes(MLDSA87_PUBLIC_KEY_BYTES);
+  std::vector<uint8_t> seed_bytes(MLDSA_SEED_BYTES);
+  auto priv_key = std::make_unique<MLDSA87_private_key>();
+  ASSERT_EQ(1, MLDSA87_generate_key(pub_bytes.data(), seed_bytes.data(),
+                                    priv_key.get()));
+
+  UniquePtr<EVP_PKEY> pub(EVP_PKEY_from_raw_public_key(
+      EVP_pkey_ml_dsa_87(), pub_bytes.data(), MLDSA87_PUBLIC_KEY_BYTES));
+  ASSERT_TRUE(pub);
+  UniquePtr<EVP_PKEY> priv(EVP_PKEY_from_private_seed(
+      EVP_pkey_ml_dsa_87(), seed_bytes.data(), MLDSA_SEED_BYTES));
+  ASSERT_TRUE(priv);
+
+  ScopedEVP_MD_CTX md_ctx;
+  ASSERT_TRUE(
+      EVP_DigestSignInit(md_ctx.get(), nullptr, nullptr, nullptr, priv.get()));
+  ASSERT_TRUE(SignatureRoundTrips(md_ctx.get(), pub.get()));
+}
+
 static bool PEMToDER(UniquePtr<uint8_t> *out, size_t *out_len,
                      const char *pem) {
   UniquePtr<BIO> bio(BIO_new_mem_buf(pem, strlen(pem)));
@@ -2755,12 +3200,12 @@ TEST(X509Test, TestFromBuffer) {
   UniquePtr<X509> root(X509_parse_from_buffer(buf.get()));
   ASSERT_TRUE(root);
 
-  EXPECT_EQ(buf.get(), root->buf);
+  EXPECT_EQ(buf.get(), FromOpaque(root.get())->buf);
   buf.reset();
 
   // This ensures the X509 took a reference to |buf|, otherwise this will be a
   // reference to free memory and ASAN should notice.
-  CRYPTO_BUFFER_len(root->buf);
+  CRYPTO_BUFFER_len(FromOpaque(root.get())->buf);
 }
 
 TEST(X509Test, TestFromBufferWithTrailingData) {
@@ -2819,7 +3264,7 @@ TEST(X509Test, TestFromBufferReused) {
   size_t data2_len;
   UniquePtr<uint8_t> data2;
   ASSERT_TRUE(PEMToDER(&data2, &data2_len, kLeafPEM));
-  EXPECT_EQ(root->buf, buf.get());
+  EXPECT_EQ(FromOpaque(root.get())->buf, buf.get());
 
   // Historically, this function tested the interaction between
   // |X509_parse_from_buffer| and object reuse. We no longer support object
@@ -2832,7 +3277,7 @@ TEST(X509Test, TestFromBufferReused) {
   root.reset(raw);
 
   ASSERT_EQ(root.get(), ret);
-  ASSERT_NE(buf.get(), root->buf);
+  ASSERT_NE(buf.get(), FromOpaque(root.get())->buf);
 
   // Free |data2| and ensure that |root| took its own copy. Otherwise
   // serializing |root|, below, will trigger a use-after-free.
@@ -3223,9 +3668,8 @@ wr6JtaX2G+pOmwcSPymZC4u2TncAP7KHgS8UGcMw8CE=
         // Expect a placeholder key.
         EXPECT_FALSE(info->x_pkey->dec_pkey);
       } else {
-        // EVP_PKEY_cmp returns one if the keys are equal.
         ASSERT_TRUE(info->x_pkey->dec_pkey);
-        EXPECT_EQ(1, EVP_PKEY_cmp(expected->key, info->x_pkey->dec_pkey));
+        EXPECT_EQ(1, EVP_PKEY_eq(expected->key, info->x_pkey->dec_pkey));
       }
     } else {
       EXPECT_EQ(nullptr, info->x_pkey);
@@ -4991,6 +5435,7 @@ TEST(X509Test, Names) {
     std::vector<std::pair<int, std::string>> cert_subject;
     std::vector<std::string> cert_dns_names;
     std::vector<std::string> cert_emails;
+    bool cert_invalid_subject_alt_name;
     std::vector<std::string> valid_dns_names;
     std::vector<std::string> invalid_dns_names;
     std::vector<std::string> valid_emails;
@@ -5002,6 +5447,7 @@ TEST(X509Test, Names) {
           /*cert_subject=*/{},
           /*cert_dns_names=*/{"example.com", "WWW.EXAMPLE.COM"},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/
           {"example.com", "EXAMPLE.COM", "www.example.com", "WWW.EXAMPLE.COM"},
           /*invalid_dns_names=*/{"test.example.com", "example.org"},
@@ -5015,6 +5461,7 @@ TEST(X509Test, Names) {
           /*cert_subject=*/{},
           /*cert_dns_names=*/{"*.example.com", "*.EXAMPLE.ORG"},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/
           {"www.example.com", "WWW.EXAMPLE.COM", "www.example.org",
            "WWW.EXAMPLE.ORG"},
@@ -5030,6 +5477,7 @@ TEST(X509Test, Names) {
           /*cert_subject=*/{},
           /*cert_dns_names=*/{"example.com", "*.example.com"},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/{"example.com"},
           /*invalid_dns_names=*/{"www.example.com"},
           /*valid_emails=*/{},
@@ -5044,6 +5492,7 @@ TEST(X509Test, Names) {
           {"a.*", "**.b.example", "*c.example", "d*.example", "e*e.example",
            "*", ".", "..", "*."},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/{},
           /*invalid_dns_names=*/
           {"a.example", "test.b.example", "cc.example", "dd.example",
@@ -5060,6 +5509,7 @@ TEST(X509Test, Names) {
           {"xn--rger-koa.a.example", "*.xn--rger-koa.b.example",
            "www.xn--rger-koa.c.example"},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/
           {"xn--rger-koa.a.example", "www.xn--rger-koa.b.example",
            "www.xn--rger-koa.c.example"},
@@ -5079,6 +5529,7 @@ TEST(X509Test, Names) {
                             {NID_commonName, "*.b.example"}},
           /*cert_dns_names=*/{},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/
           {"a.example", "A.EXAMPLE", "test.b.example", "TEST.B.EXAMPLE"},
           /*invalid_dns_names=*/{},
@@ -5091,6 +5542,22 @@ TEST(X509Test, Names) {
                             {NID_commonName, "*.b.example"}},
           /*cert_dns_names=*/{"example.com"},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
+          /*valid_dns_names=*/{},
+          /*invalid_dns_names=*/
+          {"a.example", "A.EXAMPLE", "test.b.example", "TEST.B.EXAMPLE"},
+          /*valid_emails=*/{},
+          /*invalid_emails=*/{},
+          /*flags=*/0,
+      },
+
+      // An invalid SAN extension should not trigger the common name fallback.
+      {
+          /*cert_subject=*/{{NID_commonName, "a.example"},
+                            {NID_commonName, "*.b.example"}},
+          /*cert_dns_names=*/{},
+          /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/true,
           /*valid_dns_names=*/{},
           /*invalid_dns_names=*/
           {"a.example", "A.EXAMPLE", "test.b.example", "TEST.B.EXAMPLE"},
@@ -5104,6 +5571,7 @@ TEST(X509Test, Names) {
           /*cert_subject=*/{{NID_organizationName, "example.com"}},
           /*cert_dns_names=*/{},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/{},
           /*invalid_dns_names=*/{"example.com"},
           /*valid_emails=*/{},
@@ -5116,6 +5584,7 @@ TEST(X509Test, Names) {
           /*cert_subject=*/{},
           /*cert_dns_names=*/{"www.example.com"},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/{},
           /*invalid_dns_names=*/{"*.example.com"},
           /*valid_emails=*/{},
@@ -5129,6 +5598,7 @@ TEST(X509Test, Names) {
           /*cert_subject=*/{},
           /*cert_dns_names=*/{"www.a.example", "*.b.test"},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/{},
           /*invalid_dns_names=*/
           {".www.a.example", ".www.b.test", ".a.example", ".b.test", ".example",
@@ -5144,6 +5614,7 @@ TEST(X509Test, Names) {
           /*cert_subject=*/{},
           /*cert_dns_names=*/{},
           /*cert_emails=*/{"test@a.example", "TEST@B.EXAMPLE"},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/{},
           /*invalid_dns_names=*/{"a.example", "b.example"},
           /*valid_emails=*/
@@ -5161,6 +5632,7 @@ TEST(X509Test, Names) {
                             {NID_pkcs9_emailAddress, "TEST@B.EXAMPLE"}},
           /*cert_dns_names=*/{},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/{},
           /*invalid_dns_names=*/{"a.example", "b.example"},
           /*valid_emails=*/
@@ -5177,6 +5649,7 @@ TEST(X509Test, Names) {
           /*cert_subject=*/{},
           /*cert_dns_names=*/{},
           /*cert_emails=*/{"test@*.a.example", "@b.example", "*@c.example"},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/{},
           /*invalid_dns_names=*/{},
           /*valid_emails=*/{},
@@ -5193,6 +5666,7 @@ TEST(X509Test, Names) {
                             {NID_countryName, "US"}},
           /*cert_dns_names=*/{},
           /*cert_emails=*/{},
+          /*cert_invalid_subject_alt_name=*/false,
           /*valid_dns_names=*/{"a.example"},
           /*invalid_dns_names=*/{},
           /*valid_emails=*/{"test@b.example"},
@@ -5241,7 +5715,14 @@ TEST(X509Test, Names) {
           ASN1_STRING_set(name->d.rfc822Name, email.data(), email.size()));
       ASSERT_TRUE(PushToStack(sans.get(), std::move(name)));
     }
-    if (sk_GENERAL_NAME_num(sans.get()) != 0) {
+    if (t.cert_invalid_subject_alt_name) {
+      UniquePtr<X509_EXTENSION> ext(X509_EXTENSION_new());
+      ASSERT_TRUE(ext);
+      ASSERT_TRUE(X509_EXTENSION_set_object(ext.get(),
+                                            OBJ_nid2obj(NID_subject_alt_name)));
+      // Leave the contents as an empty string, which is invalid.
+      ASSERT_TRUE(X509_add_ext(cert.get(), ext.get(), -1));
+    } else if (sk_GENERAL_NAME_num(sans.get()) != 0) {
       ASSERT_TRUE(X509_add1_ext_i2d(cert.get(), NID_subject_alt_name,
                                     sans.get(), /*crit=*/0, /*flags=*/0));
     }
@@ -5251,7 +5732,8 @@ TEST(X509Test, Names) {
       SCOPED_TRACE(dns);
       EXPECT_EQ(1, X509_check_host(cert.get(), dns.data(), dns.size(), t.flags,
                                    /*peername=*/nullptr));
-      EXPECT_EQ(X509_V_OK,
+      EXPECT_EQ(t.cert_invalid_subject_alt_name ? X509_V_ERR_INVALID_EXTENSION
+                                                : X509_V_OK,
                 Verify(cert.get(), {root.get()}, /*intermediates=*/{},
                        /*crls=*/{}, /*flags=*/0, [&](X509_STORE_CTX *ctx) {
                          X509_VERIFY_PARAM *param =
@@ -5266,7 +5748,8 @@ TEST(X509Test, Names) {
       SCOPED_TRACE(dns);
       EXPECT_EQ(0, X509_check_host(cert.get(), dns.data(), dns.size(), t.flags,
                                    /*peername=*/nullptr));
-      EXPECT_EQ(X509_V_ERR_HOSTNAME_MISMATCH,
+      EXPECT_EQ(t.cert_invalid_subject_alt_name ? X509_V_ERR_INVALID_EXTENSION
+                                                : X509_V_ERR_HOSTNAME_MISMATCH,
                 Verify(cert.get(), {root.get()}, /*intermediates=*/{},
                        /*crls=*/{}, /*flags=*/0, [&](X509_STORE_CTX *ctx) {
                          X509_VERIFY_PARAM *param =
@@ -5281,7 +5764,8 @@ TEST(X509Test, Names) {
       SCOPED_TRACE(email);
       EXPECT_EQ(
           1, X509_check_email(cert.get(), email.data(), email.size(), t.flags));
-      EXPECT_EQ(X509_V_OK,
+      EXPECT_EQ(t.cert_invalid_subject_alt_name ? X509_V_ERR_INVALID_EXTENSION
+                                                : X509_V_OK,
                 Verify(cert.get(), {root.get()}, /*intermediates=*/{},
                        /*crls=*/{}, /*flags=*/0, [&](X509_STORE_CTX *ctx) {
                          X509_VERIFY_PARAM *param =
@@ -5296,7 +5780,8 @@ TEST(X509Test, Names) {
       SCOPED_TRACE(email);
       EXPECT_EQ(
           0, X509_check_email(cert.get(), email.data(), email.size(), t.flags));
-      EXPECT_EQ(X509_V_ERR_EMAIL_MISMATCH,
+      EXPECT_EQ(t.cert_invalid_subject_alt_name ? X509_V_ERR_INVALID_EXTENSION
+                                                : X509_V_ERR_EMAIL_MISMATCH,
                 Verify(cert.get(), {root.get()}, /*intermediates=*/{},
                        /*crls=*/{}, /*flags=*/0, [&](X509_STORE_CTX *ctx) {
                          X509_VERIFY_PARAM *param =
@@ -5695,13 +6180,13 @@ TEST(X509Test, Print) {
         X509v3 extensions:
             X509v3 Key Usage: critical
                 Digital Signature, Key Encipherment
-            X509v3 Extended Key Usage: 
+            X509v3 Extended Key Usage:
                 TLS Web Server Authentication, TLS Web Client Authentication
             X509v3 Basic Constraints: critical
                 CA:FALSE
-            X509v3 Subject Key Identifier: 
+            X509v3 Subject Key Identifier:
                 A3:79:A6:F6:EE:AF:B9:A5:5E:37:8C:11:80:34:E2:75
-            X509v3 Authority Key Identifier: 
+            X509v3 Authority Key Identifier:
                 keyid:8C:1A:68:A8:B5:76:DB:5D:57:7B:1F:8D:14:B2:06:A3
 
     Signature Algorithm: sha256WithRSAEncryption
@@ -6568,7 +7053,10 @@ TEST(X509Test, ExtensionFromConf) {
       // issuingDistributionPoint takes a list of name:value pairs. Omitting the
       // value is not allowed.
       {"issuingDistributionPoint", "fullname", nullptr, {}},
+      {"issuingDistributionPoint", "relativename", nullptr, {}},
 
+      // issuingDistributionPoint can specify a nameRelativeToCRLIssuer by
+      // section.
       {"issuingDistributionPoint",
        "relativename:name",
        "[name]\nCN=Hello\n",
@@ -6598,6 +7086,56 @@ TEST(X509Test, ExtensionFromConf) {
         0x04, 0x06, 0x13, 0x02, 0x55, 0x53, 0x30, 0x0c, 0x06, 0x03,
         0x55, 0x04, 0x03, 0x0c, 0x05, 0x48, 0x65, 0x6c, 0x6c, 0x6f}},
 
+      // issuingDistributionPoint can specify a fullName by section or inline.
+      {"issuingDistributionPoint",
+       "fullname:URI:http://example.com/",
+       nullptr,
+       {0x30, 0x22, 0x06, 0x03, 0x55, 0x1d, 0x1c, 0x04, 0x1b,
+        0x30, 0x19, 0xa0, 0x17, 0xa0, 0x15, 0x86, 0x13, 0x68,
+        0x74, 0x74, 0x70, 0x3a, 0x2f, 0x2f, 0x65, 0x78, 0x61,
+        0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63, 0x6f, 0x6d, 0x2f}},
+      {"issuingDistributionPoint",
+       "fullname:@name",
+       "[name]\nURI.1=https://example.com/1\nURI.2=https://example.com/2",
+       {0x30, 0x3b, 0x06, 0x03, 0x55, 0x1d, 0x1c, 0x04, 0x34, 0x30, 0x32,
+        0xa0, 0x30, 0xa0, 0x2e, 0x86, 0x15, 0x68, 0x74, 0x74, 0x70, 0x73,
+        0x3a, 0x2f, 0x2f, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e,
+        0x63, 0x6f, 0x6d, 0x2f, 0x31, 0x86, 0x15, 0x68, 0x74, 0x74, 0x70,
+        0x73, 0x3a, 0x2f, 0x2f, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65,
+        0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x32}},
+
+      // The inline form of fullName can take multiple values, but only when the
+      // whole value is indirected through a section. Otherwise
+      // |X509V3_parse_list| splits it by commas too early.
+      {"issuingDistributionPoint",
+       "@idp",
+       "[idp]\nfullname = URI:https://example.com/1, URI:https://example.com/2",
+       {0x30, 0x3b, 0x06, 0x03, 0x55, 0x1d, 0x1c, 0x04, 0x34, 0x30, 0x32,
+        0xa0, 0x30, 0xa0, 0x2e, 0x86, 0x15, 0x68, 0x74, 0x74, 0x70, 0x73,
+        0x3a, 0x2f, 0x2f, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e,
+        0x63, 0x6f, 0x6d, 0x2f, 0x31, 0x86, 0x15, 0x68, 0x74, 0x74, 0x70,
+        0x73, 0x3a, 0x2f, 0x2f, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65,
+        0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x32}},
+
+      // Multiple distribution point names are an error, either two full, two
+      // relative, or one of each.
+      {"issuingDistributionPoint",
+       "fullname:URI:http://a.example/, fullname:URI:http://b.example",
+       nullptr,
+       {}},
+      {"issuingDistributionPoint",
+       "fullname:URI:http://a.example/, relativename:name",
+       "[name]\nCN=Hello\n",
+       {}},
+      {"issuingDistributionPoint",
+       "relativename:name, fullname:URI:http://a.example/",
+       "[name]\nCN=Hello\n",
+       {}},
+      {"issuingDistributionPoint",
+       "relativename:name1, relativename:name2",
+       "[name1]\nCN=Hello\n[name2]\nCN=World\n",
+       {}},
+
       // Duplicate reason keys are an error. Reaching this case is interesting.
       // The value can a string like "key:value,key:value", or it can be
       // "@section" and reference a config section. If using a string, duplicate
@@ -6613,6 +7151,75 @@ TEST(X509Test, ExtensionFromConf) {
       {"issuingDistributionPoint",
        "onlysomereasons:keyCompromise,onlysomereasons:CACompromise\n",
        nullptr,
+       {}},
+
+      // crlDistributionPoints takes a series of key/value pairs, each of which
+      // becomes a distribution point. If a pair has a value, this is a
+      // shorthand to specify a GeneralName, which goes into a single
+      // distribution point as its sole fullName value. Otherwise, the key is a
+      // second reference which specifies the distribution point.
+      {"crlDistributionPoints",
+       "dp1, dp2, dp3, dp4, URI:http://a.example, DNS:example.com",
+       R"(
+# Empty distribution point. This is not actually allowed, but OpenSSL's config
+# syntax will construct it.
+[dp1]
+
+# A fullName with multiple names.
+[dp2]
+fullname = URI:http://a.example, URI:http://b.example
+
+# A nameRelativeToCRLIssuer, with all the other options.
+[dp3]
+relativename = relname
+reasons = keyCompromise, CACompromise
+CRLissuer = dirName:crlissuer
+# Unknown keys are silently ignored. This is probably a bug.
+foo = bar
+[relname]
+CN = Test
+[crlissuer]
+CN = CRL Issuer
+
+# cRLIssuer is, for some reason, a GeneralNames, yet RFC 5280 says "If present,
+# the cRLIssuer MUST only contain the distinguished name (DN) from the issuer
+# field of the CRL to which the DistributionPoint is pointing." While invalid by
+# this text, it is syntactically possible in both X.509 and OpenSSL's ad-hoc
+# config language to specify a multi-valued GeneralNames with non-DN SAN types.
+[dp4]
+CRLissuer = URI:http://example.com, DNS:example.com, IP:127.0.0.1
+)",
+       {0x30, 0x81, 0xbf, 0x06, 0x03, 0x55, 0x1d, 0x1f, 0x04, 0x81, 0xb7, 0x30,
+        0x81, 0xb4, 0x30, 0x00, 0x30, 0x28, 0xa0, 0x26, 0xa0, 0x24, 0x86, 0x10,
+        0x68, 0x74, 0x74, 0x70, 0x3a, 0x2f, 0x2f, 0x61, 0x2e, 0x65, 0x78, 0x61,
+        0x6d, 0x70, 0x6c, 0x65, 0x86, 0x10, 0x68, 0x74, 0x74, 0x70, 0x3a, 0x2f,
+        0x2f, 0x62, 0x2e, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x30, 0x30,
+        0xa0, 0x0f, 0xa1, 0x0d, 0x30, 0x0b, 0x06, 0x03, 0x55, 0x04, 0x03, 0x0c,
+        0x04, 0x54, 0x65, 0x73, 0x74, 0x81, 0x02, 0x05, 0x60, 0xa2, 0x19, 0xa4,
+        0x17, 0x30, 0x15, 0x31, 0x13, 0x30, 0x11, 0x06, 0x03, 0x55, 0x04, 0x03,
+        0x0c, 0x0a, 0x43, 0x52, 0x4c, 0x20, 0x49, 0x73, 0x73, 0x75, 0x65, 0x72,
+        0x30, 0x29, 0xa2, 0x27, 0x86, 0x12, 0x68, 0x74, 0x74, 0x70, 0x3a, 0x2f,
+        0x2f, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63, 0x6f, 0x6d,
+        0x82, 0x0b, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63, 0x6f,
+        0x6d, 0x87, 0x04, 0x7f, 0x00, 0x00, 0x01, 0x30, 0x16, 0xa0, 0x14, 0xa0,
+        0x12, 0x86, 0x10, 0x68, 0x74, 0x74, 0x70, 0x3a, 0x2f, 0x2f, 0x61, 0x2e,
+        0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x30, 0x11, 0xa0, 0x0f, 0xa0,
+        0x0d, 0x82, 0x0b, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63,
+        0x6f, 0x6d}},
+
+      // Multiple distribution point names within a single CRL distribution
+      // point are an error. Unlike issuingDistributionPoint, this seems to be
+      // only reachable by mixing full and relative in one distribution point.
+      // There is no inline form for this extension and, within a section, it is
+      // impossible to have a duplicate key because the parser silently
+      // overrides the old key.
+      {"crlDistributionPoints",
+       "dp",
+       R"([dp]
+fullname = URI:http://a.example
+relativename = relname
+[relname]
+CN = Test)",
        {}},
 
       // subjectAltName has a series of string-based inputs for each name type.
@@ -7212,6 +7819,7 @@ val2 = IA5:BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
         X509V3_EXT_nconf(conf.get(), nullptr, t.name, t.value.c_str()));
     if (t.expected.empty()) {
       EXPECT_FALSE(ext);
+      ERR_clear_error();
     } else {
       ASSERT_TRUE(ext);
       uint8_t *der = nullptr;
@@ -7228,6 +7836,7 @@ val2 = IA5:BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
     ext.reset(X509V3_EXT_nconf(conf.get(), &ctx, t.name, t.value.c_str()));
     if (t.expected.empty()) {
       EXPECT_FALSE(ext);
+      ERR_clear_error();
     } else {
       ASSERT_TRUE(ext);
       uint8_t *der = nullptr;
@@ -7685,7 +8294,7 @@ TEST(X509Test, PublicKeyCache) {
 
   UniquePtr<EVP_PKEY> key2(X509_PUBKEY_get(pub));
   ASSERT_TRUE(key2);
-  EXPECT_EQ(1, EVP_PKEY_cmp(key.get(), key2.get()));
+  EXPECT_EQ(1, EVP_PKEY_eq(key.get(), key2.get()));
 
   // Replace |pub| with different (garbage) values.
   ASSERT_TRUE(X509_PUBKEY_set0_param(pub, OBJ_nid2obj(NID_subject_alt_name),
@@ -9065,7 +9674,7 @@ TEST(X509Test, NonDefaultKeyType) {
   // The public key can be extracted from |cert|.
   const EVP_PKEY *cert_pkey = X509_get0_pubkey(cert.get());
   ASSERT_TRUE(cert_pkey);
-  EXPECT_EQ(EVP_PKEY_cmp(pkey.get(), cert_pkey), 1);
+  EXPECT_EQ(EVP_PKEY_eq(pkey.get(), cert_pkey), 1);
   // |X509_check_private_key| should work.
   EXPECT_EQ(X509_check_private_key(cert.get(), pkey.get()), 1);
 #endif
@@ -9086,7 +9695,7 @@ TEST(X509Test, NonDefaultKeyType) {
   // The public key can be extracted from |cert|.
   const EVP_PKEY *cert_pkey = X509_get0_pubkey(cert_with_key.get());
   ASSERT_TRUE(cert_pkey);
-  EXPECT_EQ(EVP_PKEY_cmp(pkey.get(), cert_pkey), 1);
+  EXPECT_EQ(EVP_PKEY_eq(pkey.get(), cert_pkey), 1);
   // |X509_check_private_key| should work.
   EXPECT_EQ(X509_check_private_key(cert_with_key.get(), pkey.get()), 1);
 
@@ -9174,6 +9783,133 @@ TEST(X509Test, SelfAssignFields) {
   X509_ALGOR_get0(&obj, &param_type, /*out_param_value=*/nullptr, alg);
   EXPECT_EQ(OBJ_obj2nid(obj), NID_sha256WithRSAEncryption);
   EXPECT_EQ(param_type, V_ASN1_NULL);
+}
+
+TEST(X509Test, X509StoreGet1IssuerMultipleMatches) {
+  // |kLeafPEM| is signed by |kIntermediatePEM|.
+  UniquePtr<X509> cert = CertFromPEM(kLeafPEM);
+  ASSERT_TRUE(cert);
+
+  // Get an intermediate certificate that will match |cert|.
+  UniquePtr<X509> issuer_ok = CertFromPEM(kIntermediatePEM);
+  ASSERT_TRUE(issuer_ok);
+
+  // Make certificates with the same issuer but the wrong SKID. They must be
+  // signed by *some* key, but it doesn't matter which.
+  UniquePtr<EVP_PKEY> key = PrivateKeyFromPEM(kRSAKey);
+  ASSERT_TRUE(key);
+  auto make_wrong_skid = [&](Span<const uint8_t> skid) -> UniquePtr<X509> {
+    UniquePtr<X509> ret(X509_dup(issuer_ok.get()));
+    if (ret == nullptr) {
+      return nullptr;
+    }
+    X509_EXTENSION_free(X509_delete_ext(
+        ret.get(),
+        X509_get_ext_by_NID(ret.get(), NID_subject_key_identifier, -1)));
+    if (!AddSubjectKeyIdentifier(ret.get(), skid) ||
+        !X509_sign(ret.get(), key.get(), EVP_sha256())) {
+      return nullptr;
+    }
+    return ret;
+  };
+
+  // Find an unrelated certificate that sorts _before_ the others.
+  // "O=BoringSSL TESTING, CN=Root CA" sorts before "O=BoringSSL TESTING,
+  // CN=Intermediate CA" because it is _shorter_. See |X509_NAME_cmp|.
+  UniquePtr<X509> unrelated_before = CertFromPEM(kRootCAPEM);
+  ASSERT_TRUE(unrelated_before);
+
+  // Create a store, adding |unrelated_before|, |issuer_ok|, and several
+  // certificates with the right name and wrong SKID.
+  UniquePtr<X509_STORE> store(X509_STORE_new());
+  ASSERT_TRUE(store);
+  ASSERT_TRUE(X509_STORE_add_cert(store.get(), unrelated_before.get()));
+  for (uint8_t i = 0; i < 64; i++) {
+    uint8_t skid[1] = {i};
+    UniquePtr<X509> issuer_wrong = make_wrong_skid(skid);
+    ASSERT_TRUE(issuer_wrong);
+    ASSERT_TRUE(X509_STORE_add_cert(store.get(), issuer_wrong.get()));
+  }
+  ASSERT_TRUE(X509_STORE_add_cert(store.get(), issuer_ok.get()));
+  for (uint8_t i = 64; i < 128; i++) {
+    uint8_t skid[1] = {i};
+    UniquePtr<X509> issuer_wrong = make_wrong_skid(skid);
+    ASSERT_TRUE(issuer_wrong);
+    ASSERT_TRUE(X509_STORE_add_cert(store.get(), issuer_wrong.get()));
+  }
+
+  // Verify a certificate using the store. It should find the correct issuer.
+  UniquePtr<X509_STORE_CTX> ctx(X509_STORE_CTX_new());
+  ASSERT_TRUE(ctx);
+  ASSERT_TRUE(X509_STORE_CTX_init(ctx.get(), store.get(), cert.get(), nullptr));
+  X509_STORE_CTX_set_time_posix(ctx.get(), /*flags=*/0, kReferenceTime);
+  EXPECT_EQ(X509_verify_cert(ctx.get()), 1)
+      << "Certificate verification failed: "
+      << X509_STORE_CTX_get_error(ctx.get());
+
+  // Validate that a lookup by issuer name will not return |issuer_ok|,
+  // otherwise the test may flakily fail to flag a regression. It is not
+  // well-defined which issuer should be returned, but we use a stable sort, so
+  // this is currently reliable. If we ever change this, we can remove this
+  // check and rely on there being several bad certificates.
+  X509_OBJECT obj;
+  ASSERT_EQ(
+      1, X509_STORE_CTX_get_by_subject(ctx.get(), X509_LU_X509,
+                                       X509_get_issuer_name(cert.get()), &obj));
+  EXPECT_NE(0, X509_cmp(X509_OBJECT_get0_X509(&obj), issuer_ok.get()));
+  X509_OBJECT_free_contents(&obj);
+
+  // Check that by actually looking up using the certificate and not just its
+  // issuer name, we can do better and get |issuer_ok|.
+  X509 *found_issuer = nullptr;
+  int get1_ret =
+      X509_STORE_CTX_get1_issuer(&found_issuer, ctx.get(), cert.get());
+  ASSERT_EQ(1, get1_ret);
+  ASSERT_TRUE(found_issuer);
+  EXPECT_EQ(0, X509_cmp(found_issuer, issuer_ok.get()));
+  X509_free(found_issuer);
+}
+
+TEST(X509Test, CheckPrivateKey) {
+  UniquePtr<EVP_PKEY> p256(EVP_PKEY_generate_from_alg(EVP_pkey_ec_p256()));
+  ASSERT_TRUE(p256);
+  UniquePtr<EVP_PKEY> p256_2(EVP_PKEY_generate_from_alg(EVP_pkey_ec_p256()));
+  ASSERT_TRUE(p256_2);
+  UniquePtr<EVP_PKEY> p384(EVP_PKEY_generate_from_alg(EVP_pkey_ec_p384()));
+  ASSERT_TRUE(p384);
+  UniquePtr<EVP_PKEY> rsa(EVP_PKEY_generate_from_alg(EVP_pkey_rsa()));
+  ASSERT_TRUE(rsa);
+
+  UniquePtr<X509> cert = MakeTestCert("Issuer", "Subject", p256.get(), false);
+  ASSERT_TRUE(cert);
+  ASSERT_TRUE(X509_sign(cert.get(), p256.get(), EVP_sha256()));
+
+  EXPECT_EQ(X509_check_private_key(cert.get(), p256.get()), 1);
+  EXPECT_EQ(X509_check_private_key(cert.get(), p256_2.get()), 0);
+  EXPECT_TRUE(
+      ErrorEquals(ERR_get_error(), ERR_LIB_X509, X509_R_KEY_VALUES_MISMATCH));
+  EXPECT_EQ(X509_check_private_key(cert.get(), p384.get()), 0);
+  EXPECT_TRUE(
+      ErrorEquals(ERR_get_error(), ERR_LIB_X509, X509_R_KEY_VALUES_MISMATCH));
+  EXPECT_EQ(X509_check_private_key(cert.get(), rsa.get()), 0);
+  EXPECT_TRUE(
+      ErrorEquals(ERR_get_error(), ERR_LIB_X509, X509_R_KEY_TYPE_MISMATCH));
+
+  UniquePtr<X509_REQ> csr = CSRFromPEM(kTestCSR);
+  ASSERT_TRUE(csr);
+  ASSERT_TRUE(X509_REQ_set_pubkey(csr.get(), p256.get()));
+  ASSERT_TRUE(X509_REQ_sign(csr.get(), p256.get(), EVP_sha256()));
+
+  EXPECT_EQ(X509_REQ_check_private_key(csr.get(), p256.get()), 1);
+  EXPECT_EQ(X509_REQ_check_private_key(csr.get(), p256_2.get()), 0);
+  EXPECT_TRUE(
+      ErrorEquals(ERR_get_error(), ERR_LIB_X509, X509_R_KEY_VALUES_MISMATCH));
+  EXPECT_EQ(X509_REQ_check_private_key(csr.get(), p384.get()), 0);
+  EXPECT_TRUE(
+      ErrorEquals(ERR_get_error(), ERR_LIB_X509, X509_R_KEY_VALUES_MISMATCH));
+  EXPECT_EQ(X509_REQ_check_private_key(csr.get(), rsa.get()), 0);
+  EXPECT_TRUE(
+      ErrorEquals(ERR_get_error(), ERR_LIB_X509, X509_R_KEY_TYPE_MISMATCH));
 }
 
 }  // namespace

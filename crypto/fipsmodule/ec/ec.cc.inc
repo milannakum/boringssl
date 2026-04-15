@@ -26,6 +26,7 @@
 #include <openssl/nid.h>
 
 #include "../../internal.h"
+#include "../../mem_internal.h"
 #include "../bn/internal.h"
 #include "../delocate.h"
 #include "internal.h"
@@ -201,16 +202,10 @@ EC_GROUP *EC_GROUP_new_curve_GFp(const BIGNUM *p, const BIGNUM *a,
     return nullptr;
   }
 
-  UniquePtr<EC_GROUP> ret(
-      reinterpret_cast<EC_GROUP *>(OPENSSL_zalloc(sizeof(EC_GROUP))));
+  UniquePtr<ECCustomGroup> ret(New<ECCustomGroup>(EC_GFp_mont_method()));
   if (ret == nullptr) {
     return nullptr;
   }
-  ret->references = 1;
-  ret->meth = EC_GFp_mont_method();
-  bn_mont_ctx_init(&ret->field);
-  bn_mont_ctx_init(&ret->order);
-  ret->generator.group = ret.get();
   if (!ec_GFp_simple_group_set_curve(ret.get(), p, a_reduced, b_reduced, ctx)) {
     return nullptr;
   }
@@ -285,17 +280,27 @@ EC_GROUP *EC_GROUP_new_by_curve_name(int nid) {
   }
 }
 
+ECCustomGroup::ECCustomGroup(const EC_METHOD *m)
+    : ec_group_st({}), RefCounted(CheckSubClass()) {
+  meth = m;
+  bn_mont_ctx_init(&field);
+  bn_mont_ctx_init(&order);
+  generator.group = this;
+}
+
+ECCustomGroup::~ECCustomGroup() {
+  bn_mont_ctx_cleanup(&order);
+  bn_mont_ctx_cleanup(&field);
+}
+
 void EC_GROUP_free(EC_GROUP *group) {
   if (group == nullptr ||
       // Built-in curves are static.
-      group->curve_name != NID_undef ||
-      !CRYPTO_refcount_dec_and_test_zero(&group->references)) {
+      group->curve_name != NID_undef) {
     return;
   }
-
-  bn_mont_ctx_cleanup(&group->order);
-  bn_mont_ctx_cleanup(&group->field);
-  OPENSSL_free(group);
+  auto *custom = static_cast<ECCustomGroup *>(group);
+  custom->DecRefInternal();
 }
 
 EC_GROUP *EC_GROUP_dup(const EC_GROUP *a) {
@@ -304,11 +309,12 @@ EC_GROUP *EC_GROUP_dup(const EC_GROUP *a) {
       a->curve_name != NID_undef) {
     return (EC_GROUP *)a;
   }
+  auto *custom = static_cast<const ECCustomGroup *>(a);
 
   // Groups are logically immutable (but for |EC_GROUP_set_generator| which must
   // be called early on), so we simply take a reference.
-  EC_GROUP *group = (EC_GROUP *)a;
-  CRYPTO_refcount_inc(&group->references);
+  ECCustomGroup *group = const_cast<ECCustomGroup *>(custom);
+  group->UpRefInternal();
   return group;
 }
 
@@ -411,7 +417,7 @@ EC_POINT *EC_POINT_new(const EC_GROUP *group) {
     return nullptr;
   }
 
-  EC_POINT *ret = reinterpret_cast<EC_POINT *>(OPENSSL_malloc(sizeof *ret));
+  EC_POINT *ret = New<EC_POINT>();
   if (ret == nullptr) {
     return nullptr;
   }
@@ -428,7 +434,7 @@ static void ec_point_free(EC_POINT *point, int free_group) {
   if (free_group) {
     EC_GROUP_free(point->group);
   }
-  OPENSSL_free(point);
+  Delete(point);
 }
 
 void EC_POINT_free(EC_POINT *point) {

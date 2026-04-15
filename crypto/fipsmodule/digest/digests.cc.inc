@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include <openssl/digest.h>
-#include <openssl/ripemd.h>
 
 #include <assert.h>
 #include <string.h>
@@ -158,35 +157,6 @@ DEFINE_METHOD_FUNCTION(EVP_MD, EVP_sha512) {
 }
 
 
-static void sha512_224_init(EVP_MD_CTX *ctx) {
-  BCM_sha512_224_init(reinterpret_cast<SHA512_CTX *>(ctx->md_data));
-}
-
-static void sha512_224_update(EVP_MD_CTX *ctx, const void *data, size_t count) {
-  BCM_sha512_224_update(reinterpret_cast<SHA512_CTX *>(ctx->md_data), data, count);
-}
-
-static void sha512_224_final(EVP_MD_CTX *ctx, uint8_t *md) {
-  // BCM_sha512_224_final writes BCM_SHA512_224_DIGEST_BUFFER_LENGTH (32) bytes
-  // but EVP_MD's md_size is BCM_SHA512_224_DIGEST_LENGTH (28).
-  // Use a temporary buffer and copy only the first 28 bytes.
-  uint8_t tmp[BCM_SHA512_224_DIGEST_BUFFER_LENGTH];
-  BCM_sha512_224_final(tmp, reinterpret_cast<SHA512_CTX *>(ctx->md_data));
-  OPENSSL_memcpy(md, tmp, BCM_SHA512_224_DIGEST_LENGTH);
-}
-
-DEFINE_METHOD_FUNCTION(EVP_MD, EVP_sha512_224) {
-  out->type = NID_sha512_224;
-  out->md_size = BCM_SHA512_224_DIGEST_LENGTH;
-  out->flags = 0;
-  out->init = sha512_224_init;
-  out->update = sha512_224_update;
-  out->final = sha512_224_final;
-  out->block_size = 128;
-  out->ctx_size = sizeof(SHA512_CTX);
-}
-
-
 static void sha512_256_init(EVP_MD_CTX *ctx) {
   BCM_sha512_256_init(reinterpret_cast<SHA512_CTX *>(ctx->md_data));
 }
@@ -209,30 +179,6 @@ DEFINE_METHOD_FUNCTION(EVP_MD, EVP_sha512_256) {
   out->final = sha512_256_final;
   out->block_size = 128;
   out->ctx_size = sizeof(SHA512_CTX);
-}
-
-
-static void ripemd160_init(EVP_MD_CTX *ctx) {
-  CHECK(RIPEMD160_Init(reinterpret_cast<RIPEMD160_CTX *>(ctx->md_data)));
-}
-
-static void ripemd160_update(EVP_MD_CTX *ctx, const void *data, size_t count) {
-  CHECK(RIPEMD160_Update(reinterpret_cast<RIPEMD160_CTX *>(ctx->md_data), data, count));
-}
-
-static void ripemd160_final(EVP_MD_CTX *ctx, uint8_t *md) {
-  CHECK(RIPEMD160_Final(md, reinterpret_cast<RIPEMD160_CTX *>(ctx->md_data)));
-}
-
-DEFINE_DATA(EVP_MD, EVP_ripemd160, const) {
-  out->type = NID_ripemd160;
-  out->md_size = RIPEMD160_DIGEST_LENGTH;
-  out->flags = 0;
-  out->init = ripemd160_init;
-  out->update = ripemd160_update;
-  out->final = ripemd160_final;
-  out->block_size = 64;
-  out->ctx_size = sizeof(RIPEMD160_CTX);
 }
 
 #undef CHECK

@@ -44,7 +44,10 @@
 #include "internal.h"
 
 
-// Source is an awkward expression of a union type in C++: Stdin | File filename.
+BSSL_NAMESPACE_BEGIN
+
+// Source is an awkward expression of a union type in C++: Stdin | File
+// filename.
 struct Source {
   enum Type {
     STDIN,
@@ -449,10 +452,8 @@ bool SHA512Sum(const std::vector<std::string> &args) {
   return DigestSum(EVP_sha512(), args);
 }
 
-bool SHA512224Sum(const std::vector<std::string> &args) {
-  return DigestSum(EVP_sha512_224(), args);
-}
-
 bool SHA512256Sum(const std::vector<std::string> &args) {
   return DigestSum(EVP_sha512_256(), args);
 }
+
+BSSL_NAMESPACE_END

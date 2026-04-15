@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include <openssl/sha2.h>
-#include <openssl/sha.h>
 
 #include <openssl/mem.h>
 
@@ -43,31 +42,6 @@ uint8_t *SHA384(const uint8_t *data, size_t len,
   BCM_sha384_init(&ctx);
   BCM_sha384_update(&ctx, data, len);
   BCM_sha384_final(out, &ctx);
-  OPENSSL_cleanse(&ctx, sizeof(ctx));
-  return out;
-}
-
-int SHA512_224_Init(SHA512_CTX *sha) {
-  BCM_sha512_224_init(sha);
-  return 1;
-}
-
-int SHA512_224_Update(SHA512_CTX *sha, const void *data, size_t len) {
-  BCM_sha512_224_update(sha, data, len);
-  return 1;
-}
-
-int SHA512_224_Final(uint8_t out[SHA512_224_DIGEST_BUFFER_LENGTH], SHA512_CTX *sha) {
-  BCM_sha512_224_final(out, sha);
-  return 1;
-}
-
-uint8_t *SHA512_224(const uint8_t *data, size_t len,
-                uint8_t out[SHA512_224_DIGEST_BUFFER_LENGTH]) {
-  SHA512_CTX ctx;
-  BCM_sha512_224_init(&ctx);
-  BCM_sha512_224_update(&ctx, data, len);
-  BCM_sha512_224_final(out, &ctx);
   OPENSSL_cleanse(&ctx, sizeof(ctx));
   return out;
 }
