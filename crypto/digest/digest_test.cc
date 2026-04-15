@@ -62,6 +62,10 @@ static const MD sha512_256 = {"SHA512-256", &EVP_sha512_256, &SHA512_256};
 static const MD md5_sha1 = {"MD5-SHA1", &EVP_md5_sha1, nullptr};
 static const MD blake2b256 = {"BLAKE2b-256", &EVP_blake2b256, nullptr};
 static const MD blake2b512 = {"BLAKE2b-512", &EVP_blake2b512, nullptr};
+static const MD sha3_224 = {"SHA3-224", &EVP_sha3_224, nullptr};
+static const MD sha3_256 = {"SHA3-256", &EVP_sha3_256, nullptr};
+static const MD sha3_384 = {"SHA3-384", &EVP_sha3_384, nullptr};
+static const MD sha3_512 = {"SHA3-512", &EVP_sha3_512, nullptr};
 
 struct DigestTestVector {
   // md is the digest to test.
@@ -171,6 +175,29 @@ static const DigestTestVector kTestVectors[] = {
     {blake2b512, "abc", 1,
      "ba80a53f981c4d0d6a2797b69f12f6e94c212f14685ac4b74b12bb6fdbffa2d17d87c5392aab792dc252d5de4533cc9518d38aa8dbf1925ab92386edd4009923"},
 
+    // SHA-3 tests, from NIST FIPS 202 examples.
+    {sha3_224, "", 1,
+     "6b4e03423667dbb73b6e15454f0eb1abd4597f9a1b078e3f5b5a6bc7"},
+    {sha3_224, "abc", 1,
+     "e642824c3f8cf24ad09234ee7d3c766fc9a3a5168d0c94ad73b46fdf"},
+    {sha3_256, "", 1,
+     "a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a"},
+    {sha3_256, "abc", 1,
+     "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532"},
+    {sha3_384, "", 1,
+     "0c63a75b845e4f7d01107d852e4c2485c51a50aaaa94fc61995e71bbee983a2a"
+     "c3713831264adb47fb6bd1e058d5f004"},
+    {sha3_384, "abc", 1,
+     "ec01498288516fc926459f58e2c6ad8df9b473cb0fc08c2596da7cf0e49be4b2"
+     "98d88cea927ac7f539f1edf228376d25"},
+    {sha3_512, "", 1,
+     "a69f73cca23a9ac5c8b567dc185a756e97c982164fe25859e0d1dcc1475c80a6"
+     "15b2123af1f5f94c11e3e9402c3ac558f500199d95b6d3e301758586281dcd26"},
+    {sha3_512, "abc", 1,
+     "b751850b1a57168a5693cd924b6b096e08f621827444f70d884f5d0240d2712e"
+     "10e116e9192af3c91a7ec57647e3934057340b4cf408d5a56592f8274eec53f0"},
+    {sha3_256, "a", 1000000,
+     "5c8875ae474a3634ba4fd55ec85bffd661f32aca75c6d699d0cdcb6c115891c1"},
 };
 
 static void CompareDigest(const DigestTestVector *test, const uint8_t *digest,
@@ -287,6 +314,15 @@ TEST(DigestTest, Getters) {
   EXPECT_EQ(EVP_sha512(), EVP_get_digestbynid(NID_sha512));
   EXPECT_EQ(nullptr, EVP_get_digestbynid(NID_sha512WithRSAEncryption));
   EXPECT_EQ(nullptr, EVP_get_digestbynid(NID_undef));
+
+  EXPECT_EQ(EVP_sha3_224(), EVP_get_digestbyname("sha3-224"));
+  EXPECT_EQ(EVP_sha3_256(), EVP_get_digestbyname("sha3-256"));
+  EXPECT_EQ(EVP_sha3_384(), EVP_get_digestbyname("sha3-384"));
+  EXPECT_EQ(EVP_sha3_512(), EVP_get_digestbyname("sha3-512"));
+  EXPECT_EQ(EVP_sha3_256(), EVP_get_digestbyname("SHA3-256"));
+  EXPECT_EQ(EVP_sha3_384(), EVP_get_digestbynid(NID_sha3_384));
+  EXPECT_EQ(48u, EVP_MD_size(EVP_sha3_384()));
+  EXPECT_EQ(104u, EVP_MD_block_size(EVP_sha3_384()));
 
   UniquePtr<ASN1_OBJECT> obj(OBJ_txt2obj("1.3.14.3.2.26", 0));
   ASSERT_TRUE(obj);

@@ -28,6 +28,7 @@
 
 #include "../asn1/internal.h"
 #include "../fipsmodule/digest/internal.h"
+#include "../fipsmodule/keccak/internal.h"
 #include "../internal.h"
 
 
@@ -48,6 +49,10 @@ static const struct nid_to_digest nid_to_digest_mapping[] = {
     {NID_sha512, EVP_sha512, SN_sha512, LN_sha512},
     {NID_sha512_224, EVP_sha512_224, SN_sha512_224, LN_sha512_224},
     {NID_sha512_256, EVP_sha512_256, SN_sha512_256, LN_sha512_256},
+    {NID_sha3_224, EVP_sha3_224, SN_sha3_224, LN_sha3_224},
+    {NID_sha3_256, EVP_sha3_256, SN_sha3_256, LN_sha3_256},
+    {NID_sha3_384, EVP_sha3_384, SN_sha3_384, LN_sha3_384},
+    {NID_sha3_512, EVP_sha3_512, SN_sha3_512, LN_sha3_512},
     {NID_md5_sha1, EVP_md5_sha1, SN_md5_sha1, LN_md5_sha1},
     {NID_ripemd160, EVP_ripemd160, SN_ripemd160, LN_ripemd160},
     // As a remnant of signing |EVP_MD|s, OpenSSL returned the corresponding
@@ -295,6 +300,45 @@ static const EVP_MD evp_md_blake2b512 = {
 const EVP_MD *EVP_blake2b512(void) { return &evp_md_blake2b512; }
 
 static_assert(sizeof(BLAKE2B_CTX) <= EVP_MAX_MD_DATA_SIZE);
+
+
+// SHA-3
+
+static_assert(sizeof(bssl::BORINGSSL_keccak_st) <= EVP_MAX_MD_DATA_SIZE,
+              "EVP_MAX_MD_DATA_SIZE too small for Keccak state");
+
+#define DEFINE_SHA3(bits, block_bytes)                                    \
+  static void sha3_##bits##_init(EVP_MD_CTX *ctx) {                       \
+    bssl::BORINGSSL_keccak_init(                                          \
+        reinterpret_cast<bssl::BORINGSSL_keccak_st *>(ctx->md_data),      \
+        bssl::boringssl_sha3_##bits);                                     \
+  }                                                                       \
+  static void sha3_##bits##_update(EVP_MD_CTX *ctx, const void *data,     \
+                                   size_t len) {                          \
+    bssl::BORINGSSL_keccak_absorb(                                        \
+        reinterpret_cast<bssl::BORINGSSL_keccak_st *>(ctx->md_data),      \
+        reinterpret_cast<const uint8_t *>(data), len);                    \
+  }                                                                       \
+  static void sha3_##bits##_final(EVP_MD_CTX *ctx, uint8_t *md) {         \
+    bssl::BORINGSSL_keccak_squeeze(                                       \
+        reinterpret_cast<bssl::BORINGSSL_keccak_st *>(ctx->md_data), md,  \
+        (bits) / 8);                                                      \
+  }                                                                       \
+  static const EVP_MD evp_md_sha3_##bits = {                              \
+      NID_sha3_##bits,      (bits) / 8, 0,                                \
+      sha3_##bits##_init,   sha3_##bits##_update,                         \
+      sha3_##bits##_final,  (block_bytes),                                \
+      sizeof(bssl::BORINGSSL_keccak_st),                                  \
+  };                                                                      \
+  const EVP_MD *EVP_sha3_##bits() { return &evp_md_sha3_##bits; }
+
+DEFINE_SHA3(224, 144)
+DEFINE_SHA3(256, 136)
+DEFINE_SHA3(384, 104)
+DEFINE_SHA3(512, 72)
+
+#undef DEFINE_SHA3
+
 
 static void md4_init(EVP_MD_CTX *ctx) {
   BSSL_CHECK(MD4_Init(reinterpret_cast<MD4_CTX *>(ctx->md_data)));

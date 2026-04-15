@@ -70,6 +70,10 @@ void EVP_MD_do_all_sorted(void (*callback)(const EVP_MD *md,
   callback(EVP_sha512(), "sha512", nullptr, arg);
   callback(EVP_sha512_224(), "sha512-224", nullptr, arg);
   callback(EVP_sha512_256(), "sha512-256", nullptr, arg);
+  callback(EVP_sha3_224(), "sha3-224", nullptr, arg);
+  callback(EVP_sha3_256(), "sha3-256", nullptr, arg);
+  callback(EVP_sha3_384(), "sha3-384", nullptr, arg);
+  callback(EVP_sha3_512(), "sha3-512", nullptr, arg);
 }
 
 void EVP_MD_do_all(void (*callback)(const EVP_MD *md, const char *name,
