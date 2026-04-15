@@ -461,6 +461,7 @@ set(
   crypto/rand/windows.cc
   crypto/rc4/rc4.cc
   crypto/refcount.cc
+  crypto/ripemd/ripemd.cc
   crypto/rsa/rsa_asn1.cc
   crypto/rsa/rsa_crypt.cc
   crypto/rsa/rsa_extra.cc
@@ -1207,7 +1208,6 @@ set(
   decrepit/evp/evp_do_all.cc
   decrepit/obj/obj_decrepit.cc
   decrepit/rc4/rc4_decrepit.cc
-  decrepit/ripemd/ripemd.cc
   decrepit/rsa/rsa_decrepit.cc
   decrepit/ssl/ssl_decrepit.cc
   decrepit/x509/x509_decrepit.cc

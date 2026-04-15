@@ -23,6 +23,7 @@
 #include <openssl/md5.h>
 #include <openssl/nid.h>
 #include <openssl/obj.h>
+#include <openssl/ripemd.h>
 #include <openssl/sha.h>
 #include <openssl/span.h>
 
@@ -300,6 +301,31 @@ static const EVP_MD evp_md_blake2b512 = {
 const EVP_MD *EVP_blake2b512(void) { return &evp_md_blake2b512; }
 
 static_assert(sizeof(BLAKE2B_CTX) <= EVP_MAX_MD_DATA_SIZE);
+
+
+static void ripemd160_init(EVP_MD_CTX *ctx) {
+  BSSL_CHECK(RIPEMD160_Init(reinterpret_cast<RIPEMD160_CTX *>(ctx->md_data)));
+}
+
+static void ripemd160_update(EVP_MD_CTX *ctx, const void *data, size_t len) {
+  BSSL_CHECK(
+      RIPEMD160_Update(reinterpret_cast<RIPEMD160_CTX *>(ctx->md_data), data, len));
+}
+
+static void ripemd160_final(EVP_MD_CTX *ctx, uint8_t *md) {
+  BSSL_CHECK(RIPEMD160_Final(md, reinterpret_cast<RIPEMD160_CTX *>(ctx->md_data)));
+}
+
+static const EVP_MD evp_md_ripemd160 = {
+    NID_ripemd160,    RIPEMD160_DIGEST_LENGTH, 0,
+    ripemd160_init,   ripemd160_update,
+    ripemd160_final,  64,
+    sizeof(RIPEMD160_CTX),
+};
+
+const EVP_MD *EVP_ripemd160(void) { return &evp_md_ripemd160; }
+
+static_assert(sizeof(RIPEMD160_CTX) <= EVP_MAX_MD_DATA_SIZE);
 
 
 // SHA-3
