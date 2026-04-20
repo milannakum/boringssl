@@ -726,8 +726,7 @@ if(BUILD_TESTING)
   # PRNG initialisation, which means that it can't have other tests running before
   # it does.
   add_executable(urandom_test ${URANDOM_TEST_SOURCES})
-  target_link_libraries(urandom_test test_support_lib boringssl_gtest crypto
-                        decrepit)
+  target_link_libraries(urandom_test test_support_lib boringssl_gtest crypto)
   add_dependencies(boringssl_all_tests urandom_test)
 
   add_executable(crypto_test ${CRYPTO_TEST_SOURCES})
@@ -748,23 +747,22 @@ if(BUILD_TESTING)
   add_dependencies(boringssl_all_tests pki_test)
 
   add_executable(test_fips util/fipstools/test_fips.cc)
-  target_link_libraries(test_fips crypto decrepit)
+  target_link_libraries(test_fips crypto)
 
   add_executable(jitter_deltas util/fipstools/entropy/jitter_deltas.cc)
-  target_link_libraries(jitter_deltas crypto decrepit)
+  target_link_libraries(jitter_deltas crypto)
 
   if(BUILD_TESTING)
     add_executable(bssl_bench ${BENCH_SOURCES})
-    target_link_libraries(bssl_bench ssl pki crypto decrepit
-                          benchmark::benchmark)
+    target_link_libraries(bssl_bench ssl pki crypto benchmark::benchmark)
   endif()
 endif()
 
 if(FIPS)
   add_executable(modulewrapper ${MODULEWRAPPER_SOURCES})
-  target_link_libraries(modulewrapper crypto decrepit)
+  target_link_libraries(modulewrapper crypto)
   add_executable(entropy_modulewrapper ${ENTROPY_MODULEWRAPPER_SOURCES})
-  target_link_libraries(entropy_modulewrapper crypto decrepit)
+  target_link_libraries(entropy_modulewrapper crypto)
 endif()
 
 add_executable(bssl ${BSSL_SOURCES})
