@@ -132,9 +132,17 @@ static void keccak_init(struct BORINGSSL_keccak_st *ctx,
   size_t required_out_len;
   size_t capacity_bytes;
   switch (config) {
+    case boringssl_sha3_224:
+      capacity_bytes = 448 / 8;
+      required_out_len = 28;
+      break;
     case boringssl_sha3_256:
       capacity_bytes = 512 / 8;
       required_out_len = 32;
+      break;
+    case boringssl_sha3_384:
+      capacity_bytes = 768 / 8;
+      required_out_len = 48;
       break;
     case boringssl_sha3_512:
       capacity_bytes = 1024 / 8;
@@ -229,7 +237,9 @@ void bssl::BORINGSSL_keccak_absorb(struct BORINGSSL_keccak_st *ctx,
 static void keccak_finalize(struct BORINGSSL_keccak_st *ctx) {
   uint8_t terminator;
   switch (ctx->config) {
+    case boringssl_sha3_224:
     case boringssl_sha3_256:
+    case boringssl_sha3_384:
     case boringssl_sha3_512:
       terminator = 0x06;
       break;

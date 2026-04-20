@@ -5513,8 +5513,38 @@ extern "C" {
 #define NID_sha512_224 1094
 #define OBJ_sha512_224 2L, 16L, 840L, 1L, 101L, 3L, 4L, 2L, 5L
 
+#define SN_sha3_224 "SHA3-224"
+#define LN_sha3_224 "sha3-224"
+#define NID_sha3_224 1096
+#define OBJ_sha3_224 2L, 16L, 840L, 1L, 101L, 3L, 4L, 2L, 7L
+
+#define SN_sha3_256 "SHA3-256"
+#define LN_sha3_256 "sha3-256"
+#define NID_sha3_256 1097
+#define OBJ_sha3_256 2L, 16L, 840L, 1L, 101L, 3L, 4L, 2L, 8L
+
+#define SN_sha3_384 "SHA3-384"
+#define LN_sha3_384 "sha3-384"
+#define NID_sha3_384 1098
+#define OBJ_sha3_384 2L, 16L, 840L, 1L, 101L, 3L, 4L, 2L, 9L
+
+#define SN_sha3_512 "SHA3-512"
+#define LN_sha3_512 "sha3-512"
+#define NID_sha3_512 1099
+#define OBJ_sha3_512 2L, 16L, 840L, 1L, 101L, 3L, 4L, 2L, 10L
+
+#define SN_shake128 "SHAKE128"
+#define LN_shake128 "shake128"
+#define NID_shake128 1100
+#define OBJ_shake128 2L, 16L, 840L, 1L, 101L, 3L, 4L, 2L, 11L
+
+#define SN_shake256 "SHAKE256"
+#define LN_shake256 "shake256"
+#define NID_shake256 1101
+#define OBJ_shake256 2L, 16L, 840L, 1L, 101L, 3L, 4L, 2L, 12L
+
 #if defined(__cplusplus)
-}  // extern C
+} /* extern C */
 #endif
 
 #endif /* OPENSSL_HEADER_NID_H */

@@ -200,7 +200,8 @@ STACK_OF(SAMPLE) *sk_SAMPLE_dup(const STACK_OF(SAMPLE) *sk);
 
 // sk_SAMPLE_sort sorts the elements of |sk| into ascending order based on the
 // comparison function. The stack maintains a "sorted" flag and sorting an
-// already sorted stack is a no-op.
+// already sorted stack is a no-op. Sorting preserves the relative order of
+// elements that are equivalent under the comparison function.
 void sk_SAMPLE_sort(STACK_OF(SAMPLE) *sk);
 
 // sk_SAMPLE_is_sorted returns one if |sk| is known to be sorted and zero
@@ -627,6 +628,20 @@ PushToStack(Stack *sk,
   // OPENSSL_sk_push takes ownership on success.
   elem.release();
   return true;
+}
+
+// Define begin() and end() for stack types so C++ range for loops work.
+// This pair of functions is for DEFINE_NAMESPACED_STACK_OF stacks, unlike
+// the other pair, which is for DEFINE_STACK_OF ones.
+template <typename Stack>
+inline bssl::internal::StackIterator<Stack> begin(const Stack *sk) {
+  return bssl::internal::StackIterator<Stack>(sk, 0);
+}
+
+template <typename Stack>
+inline bssl::internal::StackIterator<Stack> end(const Stack *sk) {
+  return bssl::internal::StackIterator<Stack>(
+      sk, OPENSSL_sk_num(reinterpret_cast<const OPENSSL_STACK *>(sk)));
 }
 
 BSSL_NAMESPACE_END

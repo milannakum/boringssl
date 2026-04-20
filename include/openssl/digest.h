@@ -43,6 +43,10 @@ OPENSSL_EXPORT const EVP_MD *EVP_sha384(void);
 OPENSSL_EXPORT const EVP_MD *EVP_sha512(void);
 OPENSSL_EXPORT const EVP_MD *EVP_sha512_224(void);
 OPENSSL_EXPORT const EVP_MD *EVP_sha512_256(void);
+OPENSSL_EXPORT const EVP_MD *EVP_sha3_224(void);
+OPENSSL_EXPORT const EVP_MD *EVP_sha3_256(void);
+OPENSSL_EXPORT const EVP_MD *EVP_sha3_384(void);
+OPENSSL_EXPORT const EVP_MD *EVP_sha3_512(void);
 OPENSSL_EXPORT const EVP_MD *EVP_blake2b256(void);
 OPENSSL_EXPORT const EVP_MD *EVP_blake2b512(void);
 
@@ -127,7 +131,7 @@ OPENSSL_EXPORT int EVP_DigestUpdate(EVP_MD_CTX *ctx, const void *data,
 
 // EVP_MAX_MD_BLOCK_SIZE is the largest digest block size supported, in
 // bytes.
-#define EVP_MAX_MD_BLOCK_SIZE 128  // SHA-512 is the longest so far.
+#define EVP_MAX_MD_BLOCK_SIZE 144  // SHA3-224 has the largest block.
 
 // EVP_DigestFinal_ex finishes the digest in |ctx| and writes the output to
 // |md_out|. |EVP_MD_CTX_size| bytes are written, which is at most
@@ -206,6 +210,11 @@ OPENSSL_EXPORT size_t EVP_MD_CTX_block_size(const EVP_MD_CTX *ctx);
 // |ctx|.
 OPENSSL_EXPORT int EVP_MD_CTX_type(const EVP_MD_CTX *ctx);
 
+// EVP_MD_CTX_pkey_ctx returns the |EVP_PKEY_CTX| used to configure additional
+// parameters on |ctx| if |ctx| is used for a sign or verify operation with
+// |EVP_DigestSignInit| or |EVP_DigestVerifyInit|. It returns NULL otherwise.
+OPENSSL_EXPORT EVP_PKEY_CTX *EVP_MD_CTX_pkey_ctx(const EVP_MD_CTX *ctx);
+
 
 // ASN.1 functions.
 //
@@ -258,7 +267,7 @@ OPENSSL_EXPORT int EVP_add_digest(const EVP_MD *digest);
 
 // EVP_get_digestbyname returns an |EVP_MD| given a human readable name in
 // |name|, or NULL if the name is unknown.
-OPENSSL_EXPORT const EVP_MD *EVP_get_digestbyname(const char *);
+OPENSSL_EXPORT const EVP_MD *EVP_get_digestbyname(const char *name);
 
 // EVP_dss1 returns the value of EVP_sha1(). This was provided by OpenSSL to
 // specify the original DSA signatures, which were fixed to use SHA-1. Note,
@@ -292,6 +301,23 @@ OPENSSL_EXPORT void EVP_MD_CTX_set_flags(EVP_MD_CTX *ctx, int flags);
 // EVP_MD_nid calls |EVP_MD_type|.
 OPENSSL_EXPORT int EVP_MD_nid(const EVP_MD *md);
 
+// EVP_MD_fetch behaves like |EVP_get_digestbyname|. |libctx| and |propq| are
+// ignored. Although it returns a non-const pointer, |EVP_MD|s in BoringSSL are
+// static and do not need to be freed.
+OPENSSL_EXPORT EVP_MD *EVP_MD_fetch(OSSL_LIB_CTX *libctx, const char *name,
+                                    const char *propq);
+
+// EVP_MD_up_ref returns one. |EVP_MD|s in BoringSSL are static.
+OPENSSL_EXPORT int EVP_MD_up_ref(EVP_MD *md);
+
+// EVP_MD_free does nothing. |EVP_MD|s in BoringSSL are static.
+OPENSSL_EXPORT void EVP_MD_free(EVP_MD *md);
+
+// EVP_Q_digest behaves like |EVP_Digest| but specifies the digest by a string
+// |name|. |libctx| and |propq| are ignored.
+OPENSSL_EXPORT int EVP_Q_digest(OSSL_LIB_CTX *libctx, const char *name,
+                                const char *propq, const void *in,
+                                size_t in_len, uint8_t *out, size_t *out_len);
 
 // Internal constants and structures (hidden).
 
@@ -300,7 +326,7 @@ struct evp_md_pctx_ops;
 // EVP_MAX_MD_DATA_SIZE is a private constant which specifies the size of the
 // largest digest state. SHA-512 and BLAKE2b are joint-largest. Consuming code
 // only uses this via the `EVP_MD_CTX` type.
-#define EVP_MAX_MD_DATA_SIZE 208
+#define EVP_MAX_MD_DATA_SIZE 240
 
 // env_md_ctx_st is typoed ("evp" -> "env"), but the typo comes from OpenSSL
 // and some consumers forward-declare these structures so we're leaving it

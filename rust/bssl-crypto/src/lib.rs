@@ -54,8 +54,10 @@ pub mod hpke;
 pub mod mldsa;
 #[cfg(feature = "mlalgs")]
 pub mod mlkem;
+pub mod pkcs8;
 pub mod rsa;
 pub mod slhdsa;
+pub mod tls12_prf;
 pub mod x25519;
 
 mod scoped;
@@ -79,8 +81,10 @@ pub struct InvalidSignatureError;
 /// the pointer. When passing pointers into C/C++ code, that is not a valid
 /// pointer. Thus this method should be used whenever passing a pointer to a
 /// slice into BoringSSL code.
-trait FfiSlice<T> {
+pub trait FfiSlice<T> {
+    /// Cast the slice into a valid raw pointer for FFI.
     fn as_ffi_ptr(&self) -> *const T;
+    /// Cast the slice into a valid `const void *` pointer for FFI.
     fn as_ffi_void_ptr(&self) -> *const c_void {
         self.as_ffi_ptr() as *const c_void
     }
@@ -107,7 +111,8 @@ impl<T, const N: usize> FfiSlice<T> for [T; N] {
 }
 
 /// See the comment [`FfiSlice`].
-trait FfiMutSlice {
+pub trait FfiMutSlice {
+    /// Cast the mutable slice as a valid `uint8_t*` pointer for FFI.
     fn as_mut_ffi_ptr(&mut self) -> *mut u8;
 }
 
@@ -440,7 +445,7 @@ where
 /// Calls `func` with a `CBB` pointer and returns a [Buffer] of the ultimate
 /// contents of that CBB.
 #[allow(clippy::unwrap_used)]
-fn cbb_to_buffer<F: FnOnce(*mut bssl_sys::CBB)>(initial_capacity: usize, func: F) -> Buffer {
+pub fn cbb_to_buffer<F: FnOnce(*mut bssl_sys::CBB)>(initial_capacity: usize, func: F) -> Buffer {
     // Safety: type checking ensures that `cbb` is the correct size.
     let mut cbb = unsafe {
         initialized_struct_fallible(|cbb| bssl_sys::CBB_init(cbb, initial_capacity) == 1)

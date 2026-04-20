@@ -24,8 +24,11 @@
 #include <openssl/ec.h>
 #include <openssl/ex_data.h>
 
+#include "../../mem_internal.h"
 #include "../bn/internal.h"
 
+
+DECLARE_OPAQUE_STRUCT(ec_key_st, ECKey)
 
 BSSL_NAMESPACE_BEGIN
 
@@ -582,7 +585,12 @@ struct ec_group_st {
   // comment is a human-readable string describing the curve.
   const char *comment;
 
-  int curve_name;  // optional NID for named curve
+  // curve_name is the optional NID for named curve.
+  //
+  // If curve_name is NID_undef, the actual type is ECCustomGroup and the
+  // refcount must be respected when allocating/freeing.
+  int curve_name;
+
   uint8_t oid[9];
   uint8_t oid_len;
 
@@ -596,11 +604,18 @@ struct ec_group_st {
   // field_greater_than_order is one if |field| is greater than |order| and zero
   // otherwise.
   int field_greater_than_order;
-
-  CRYPTO_refcount_t references;
 } /* EC_GROUP */;
 
 BSSL_NAMESPACE_BEGIN
+
+class ECCustomGroup : public ec_group_st, public RefCounted<ECCustomGroup> {
+ public:
+  explicit ECCustomGroup(const EC_METHOD *meth);
+
+ private:
+  ~ECCustomGroup();
+  friend RefCounted;
+};
 
 EC_GROUP *ec_group_new(const EC_METHOD *meth, const BIGNUM *p, const BIGNUM *a,
                        const BIGNUM *b, BN_CTX *ctx);
@@ -699,26 +714,31 @@ typedef struct {
   EC_SCALAR scalar;
 } EC_WRAPPED_SCALAR;
 
-BSSL_NAMESPACE_END
+class ECKey : public ec_key_st, public RefCounted<ECKey> {
+ public:
+  explicit ECKey(const ENGINE *engine);
 
-struct ec_key_st {
-  EC_GROUP *group;
+  EC_GROUP *group = nullptr;
 
   // Ideally |pub_key| would be an |EC_AFFINE| so serializing it does not pay an
   // inversion each time, but the |EC_KEY_get0_public_key| API implies public
   // keys are stored in an |EC_POINT|-compatible form.
-  EC_POINT *pub_key;
-  bssl::EC_WRAPPED_SCALAR *priv_key;
+  EC_POINT *pub_key = nullptr;
+  bssl::EC_WRAPPED_SCALAR *priv_key = nullptr;
 
-  unsigned int enc_flag;
-  point_conversion_form_t conv_form;
+  unsigned int enc_flag = 0;
+  point_conversion_form_t conv_form = POINT_CONVERSION_UNCOMPRESSED;
 
-  CRYPTO_refcount_t references;
+  ECDSA_METHOD *ecdsa_meth = nullptr;
 
-  ECDSA_METHOD *ecdsa_meth;
+  CRYPTO_EX_DATA ex_data = {};
 
-  CRYPTO_EX_DATA ex_data;
+ private:
+  ~ECKey();
+  friend RefCounted;
 } /* EC_KEY */;
+
+BSSL_NAMESPACE_END
 
 
 #endif  // OPENSSL_HEADER_CRYPTO_FIPSMODULE_EC_INTERNAL_H
